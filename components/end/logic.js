@@ -47,21 +47,25 @@ export function useEndLogic() {
     let cancelled = false;
     async function run() {
       try {
-        let exclude = '';
+        let history = [];
         try {
-          exclude = localStorage.getItem('platforml:lastCardImageUrl') || '';
+          const raw = localStorage.getItem('platforml:cardImageHistory') || '[]';
+          const parsed = JSON.parse(raw);
+          history = Array.isArray(parsed) ? parsed.filter((v) => typeof v === 'string') : [];
         } catch (_) {
-          exclude = '';
+          history = [];
         }
 
-        const qs = exclude ? `?exclude=${encodeURIComponent(exclude)}` : '';
+        const recent = history.slice(-5);
+        const qs = recent.length > 0 ? `?exclude=${encodeURIComponent(recent.join(','))}` : '';
         const r = await fetch(`/api/random-public-image${qs}`);
         const data = await r.json().catch(() => ({}));
         const url = typeof data?.url === 'string' ? data.url : null;
         if (!cancelled) setRandomImageUrl(url || null);
         if (url) {
           try {
-            localStorage.setItem('platforml:lastCardImageUrl', url);
+            const next = [...history.filter((u) => u !== url), url].slice(-20);
+            localStorage.setItem('platforml:cardImageHistory', JSON.stringify(next));
           } catch (_) {
             // ignore
           }
