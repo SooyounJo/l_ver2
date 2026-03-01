@@ -1,0 +1,207 @@
+/* 랜딩 페이지 - Figma 16:417 스펙 반영, Pretendard, 리사이즈 대응 */
+
+/* Figma: 402×876 기준 - pipa 이미지 배경, 화면 꽉 차게 */
+.landing-page {
+  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Malgun Gothic', sans-serif;
+  min-height: 100dvh;
+  min-height: 100vh;
+  background: url('/pipa.jpg') center center / auto 130% no-repeat;
+  background-attachment: scroll;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  /* 제거된 상단바 높이만큼 여백 유지 → 나머지 div 위치 그대로 */
+  padding-top: max(clamp(3.5rem, 15vw, 4.25rem), env(safe-area-inset-top, 0));
+  padding-bottom: 0;
+  overflow: hidden;
+  position: relative;
+}
+
+/* 페이지 인디케이터 */
+.landing-indicator {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: clamp(0.35rem, 2.8vw, 0.75rem);
+  padding: clamp(0.35rem, 2vw, 0.5rem) 0;
+  flex-shrink: 0;
+}
+
+.landing-dot {
+  width: clamp(0.35rem, 4vw, 1rem);
+  height: clamp(0.35rem, 4vw, 1rem);
+  border-radius: 50%;
+  background: rgba(100, 100, 100, 0.35);
+  transition: background 0.2s;
+}
+
+.landing-dot.active {
+  background: #646464;
+}
+
+/* Figma: 제목 left 27px top 146px, 40px, #646464, line-height 1.2 */
+.landing-text-section {
+  padding: clamp(0.5rem, 3.5vw, 1rem) 6.7% 0;
+  text-align: left;
+  flex-shrink: 0;
+}
+
+.landing-title {
+  font-size: clamp(1.6rem, 10vw, 2.5rem);
+  font-weight: 400;
+  color: #646464;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+
+.landing-title-line {
+  display: block;
+}
+
+.landing-title-line + .landing-title-line {
+  margin-top: 0;
+}
+
+/* Figma: 구분선 42px, 저자 left 76px 14px #646464 */
+.landing-divider-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: clamp(0.5rem, 2.5vw, 0.9rem);
+}
+
+.landing-divider {
+  width: clamp(2rem, 10.5vw, 2.65rem);
+  height: 2px;
+  background: #646464;
+  flex-shrink: 0;
+}
+
+.landing-author {
+  font-size: clamp(0.8rem, 3.5vw, 0.875rem);
+  font-weight: 400;
+  color: #646464;
+  line-height: 1.2;
+  margin: 0;
+}
+
+.landing-gradient-fill {
+  flex: 0 0 auto;
+  min-height: 6vh;
+}
+
+/* 스와이프 영역 - 이미지2 수준, 박스가 적당히 올라온 위치 */
+.landing-swipe-area {
+  flex: 0 0 auto;
+  min-height: 10vh;
+  max-height: 14vh;
+  touch-action: none;
+  cursor: grab;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.landing-cta-wrap,
+.landing-cta {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  user-select: none;
+}
+
+.landing-swipe-area:active {
+  cursor: grabbing;
+}
+
+/* CTA 카드 - 상단(82vh) 고정, 하단만 화면 밖으로 길게 연장 */
+.landing-cta-wrap {
+  position: fixed;
+  top: 82vh;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 0 4.2%;
+  padding-bottom: env(safe-area-inset-bottom, 0);
+  z-index: 1;
+  touch-action: none;
+  transition: top 0.75s cubic-bezier(0.33, 1, 0.68, 1);
+}
+
+.landing-cta {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  height: 100%;
+  min-height: 220vh;
+  padding: clamp(1rem, 4vw, 1.5rem) 1rem;
+  padding-bottom: max(clamp(1.25rem, 5vw, 1.75rem), env(safe-area-inset-bottom, 0));
+  text-decoration: none;
+  cursor: grab;
+  background: linear-gradient(180deg, rgba(220, 235, 250, 0.1) 0%, rgba(190, 215, 240, 0.1) 40%, rgba(160, 195, 230, 0.1) 100%);
+  border-radius: 25px 25px 0 0;
+  text-align: center;
+  color: #ffffff;
+  box-shadow: 0 11px 28.8px rgba(0, 0, 0, 0.38), inset -3px -2px 4px rgba(0, 0, 0, 0.25);
+  opacity: 0.5;
+  transition: transform 0.85s cubic-bezier(0.33, 1, 0.68, 1), background 0.45s ease, border-radius 0.45s ease, opacity 0.85s ease;
+}
+
+/* text 페이지 박스 상태: 박스가 화면 전체로 올라와 멈춤 */
+.landing-cta-wrap.expanded {
+  top: 0;
+  padding-top: max(clamp(3.5rem, 15vw, 4.25rem), env(safe-area-inset-top, 0));
+}
+
+.landing-cta-wrap.expanded .landing-cta {
+  min-height: auto;
+  height: 100%;
+  background: linear-gradient(180deg, rgba(121, 124, 128, 0) 0%, rgb(244, 245, 252) 16.83%, rgb(255, 252, 240) 51.44%, rgb(255, 252, 240) 100%);
+  border-radius: 0 0 25px 25px;
+  color: #646464;
+  justify-content: center;
+  opacity: 0.85;
+}
+
+.landing-cta-wrap.expanded .landing-cta-line1,
+.landing-cta-wrap.expanded .landing-cta-line2 {
+  color: #646464;
+}
+
+/* 박스가 완전히 화면 밖(위)으로 나가도록 */
+.landing-cta-wrap.slide-up {
+  overflow: hidden;
+}
+
+.landing-cta-wrap.slide-up .landing-cta {
+  transform: translateY(-120%);
+  opacity: 1;
+}
+
+.landing-cta-line1,
+.landing-cta-line2,
+.landing-cta-arrow {
+  color: #ffffff;
+}
+
+.landing-cta-line1,
+.landing-cta-line2 {
+  display: block;
+  font-size: clamp(0.8rem, 3.5vw, 0.875rem);
+  font-weight: 600;
+}
+
+.landing-cta-line1 {
+  margin-bottom: 0.15rem;
+}
+
+.landing-cta-line2 {
+  margin-bottom: 0.5rem;
+}
+
+.landing-cta-arrow {
+  display: block;
+  font-size: clamp(1rem, 4vw, 1.25rem);
+  line-height: 1;
+}
+
