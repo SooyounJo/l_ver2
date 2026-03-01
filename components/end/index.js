@@ -1,8 +1,8 @@
 import { useEndLogic } from './logic';
 import styles from './styles.module.css';
 
-const imgCardFront = 'https://www.figma.com/api/mcp/asset/4e65a0b4-ac2b-4825-9528-e185f30b0887';
-const imgCardBack = 'https://www.figma.com/api/mcp/asset/1e942af0-dbf6-4155-b3da-952595d7ab1f';
+const fallbackCardFront = 'https://www.figma.com/api/mcp/asset/4e65a0b4-ac2b-4825-9528-e185f30b0887';
+const fallbackCardBack = 'https://www.figma.com/api/mcp/asset/1e942af0-dbf6-4155-b3da-952595d7ab1f';
 const imgArrowFrame = 'https://www.figma.com/api/mcp/asset/12e3e69b-1d2f-4bb5-835d-355f89712ca3';
 
 const cx = (...names) => names.filter(Boolean).map((n) => styles[n]).filter(Boolean).join(' ');
@@ -17,10 +17,19 @@ export default function EndScreen() {
     onWheel,
     dateText,
     quoteText,
+    randomImageUrl,
   } = useEndLogic();
 
+  const cardImage = randomImageUrl || fallbackCardBack;
+  const frontImage = randomImageUrl || fallbackCardFront;
+
   return (
-    <div className={cx('end-page', isFadingOut && 'end-fadeout')} onTouchStart={onTouchStart} onTouchEnd={onTouchEnd} onWheel={onWheel}>
+    <div
+      className={cx('end-page', isFadingOut && 'end-fadeout')}
+      onTouchStart={onTouchStart}
+      onTouchEnd={onTouchEnd}
+      onWheel={onWheel}
+    >
       <div
         className={styles['end-canvas']}
         style={{
@@ -38,7 +47,7 @@ export default function EndScreen() {
             <div className={cx('end-face', 'front')}>
               <div className={cx('end-glass', 'front')} />
               <div className={styles['end-front-img']} aria-hidden="true">
-                <img src={imgCardFront} alt="" />
+                <img src={frontImage} alt="" />
               </div>
               <div className={styles['end-front-title']} aria-hidden="true">
                 <div>무라카미</div>
@@ -61,7 +70,7 @@ export default function EndScreen() {
                 안자이 이즈마루
               </div>
               <div className={styles['end-back-img']} aria-hidden="true">
-                <img src={imgCardBack} alt="" />
+                <img src={cardImage} alt="" />
               </div>
               <div className={styles['end-back-date']}>{dateText}</div>
               <div className={styles['end-back-quote']}>{quoteText}</div>

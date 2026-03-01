@@ -1,0 +1,93 @@
+ .page {
+   min-height: 100dvh;
+   min-height: 100vh;
+   background: #0b0b0b;
+   color: #fff;
+   font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Malgun Gothic', sans-serif;
+   display: flex;
+   flex-direction: column;
+ }
+ 
+ .topBar {
+   display: flex;
+   align-items: center;
+   justify-content: space-between;
+   padding: 1rem 1.25rem;
+   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+ }
+ 
+ .title {
+   font-weight: 700;
+   letter-spacing: 0.08em;
+ }
+ 
+ .status {
+   font-size: 0.875rem;
+   opacity: 0.8;
+ }
+ 
+ .stage {
+   flex: 1;
+   display: grid;
+   place-items: center;
+   padding: 2rem;
+ }
+ 
+ .card {
+   width: min(900px, 92vw);
+   border-radius: 28px;
+   overflow: hidden;
+   background: rgba(255, 255, 255, 0.06);
+   border: 1px solid rgba(255, 255, 255, 0.12);
+   box-shadow: 0 18px 60px rgba(0, 0, 0, 0.5);
+ }
+ 
+ .imageWrap {
+   aspect-ratio: 16 / 9;
+   background: rgba(255, 255, 255, 0.04);
+ }
+ 
+ .image {
+   width: 100%;
+   height: 100%;
+   object-fit: cover;
+   display: block;
+ }
+ 
+ .imagePlaceholder {
+   aspect-ratio: 16 / 9;
+   background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02));
+ }
+ 
+ .meta {
+   display: flex;
+   justify-content: flex-end;
+   padding: 1rem 1.25rem 0;
+ }
+ 
+ .date {
+   font-size: 0.95rem;
+   opacity: 0.85;
+ }
+ 
+ .text {
+   padding: 0.9rem 1.25rem 1.4rem;
+   font-size: clamp(1rem, 1.8vw, 1.25rem);
+   line-height: 1.55;
+   white-space: pre-wrap;
+ }
+ 
+ .empty {
+   text-align: center;
+   opacity: 0.85;
+ }
+ 
+ .emptyTitle {
+   font-size: 1.25rem;
+   font-weight: 700;
+ }
+ 
+ .emptyDesc {
+   margin-top: 0.5rem;
+   opacity: 0.8;
+ }

@@ -48,16 +48,54 @@ export default async function handler(req, res) {
     return s.replace(/\s+/g, ' ').replace(/^[\s"'“”‘’]+|[\s"'“”‘’]+$/g, '').trim();
   }
 
+  function countOccurrences(haystack, needle) {
+    if (!haystack || !needle) return 0;
+    let count = 0;
+    let i = 0;
+    while (true) {
+      const at = haystack.indexOf(needle, i);
+      if (at === -1) break;
+      count += 1;
+      i = at + needle.length;
+    }
+    return count;
+  }
+
+  function hasBadRepetition(s) {
+    const t = cleanOneLine(s);
+    if (!t) return false;
+    if (countOccurrences(t, '그렇게 느꼈') >= 2) return true;
+    if (countOccurrences(t, '그렇게') >= 4) return true;
+    if (countOccurrences(t, '느꼈다') >= 3) return true;
+    return false;
+  }
+
   function enforceLen(s) {
     let out = cleanOneLine(s);
     if (!out) return out;
     if (out.length > maxLen) out = out.slice(0, maxLen).trimEnd();
     if (out.length < minLen) {
-      const filler = ' 그렇게 느꼈다.';
-      while (out.length < minLen && out.length + filler.length <= maxLen) out += filler;
+      const tails = [
+        ' 그래서 더 오래 마음에 남았다.',
+        ' 한참을 곱씹게 되는 장면이었다.',
+        ' 낯설면서도 이상하게 따뜻했다.',
+        ' 조용히 생각이 이어졌다.',
+        ' 작은 여운이 길게 남았다.',
+        ' 그런 기분이 오래 지속됐다.',
+        ' 그 감정이 쉽게 사라지지 않았다.',
+      ];
+
+      for (let i = 0; i < tails.length; i += 1) {
+        if (out.length >= minLen) break;
+        const t = tails[i];
+        if (out.includes(t.trim())) continue;
+        if (out.length + t.length <= maxLen) out += t;
+      }
+
       if (out.length < minLen) {
-        // 마지막 수단: 공백으로 채우지 말고, 짧게라도 마무리
-        out = (out + ' 그 여운이 남았다.').slice(0, maxLen).trimEnd();
+        const last = ' 여운이 남았다.';
+        if (out.length + last.length <= maxLen && !out.includes(last.trim())) out += last;
+        out = out.slice(0, maxLen).trimEnd();
       }
     }
     return out;
@@ -74,6 +112,11 @@ export default async function handler(req, res) {
       const msg = i === 0 ? attempts[0] : attempts[1](output || input);
       output = cleanOneLine(await callOpenAI(msg));
       if (output.length >= minLen && output.length <= maxLen) break;
+    }
+
+    if (output.length >= minLen && output.length <= maxLen && hasBadRepetition(output)) {
+      const msg = `결과: ${output}\n\n반복되는 표현(예: '그렇게 느꼈')을 제거하고, 같은 구절/어미로 채우지 말고, 공백 포함 ${minLen}~${maxLen}자 한국어 1문장으로 다시 써줘.`;
+      output = cleanOneLine(await callOpenAI(msg));
     }
 
     output = enforceLen(output);

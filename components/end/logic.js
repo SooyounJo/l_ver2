@@ -9,6 +9,7 @@ export function useEndLogic() {
   const [touchStartY, setTouchStartY] = useState(null);
   const [dateText, setDateText] = useState('----.--.--');
   const [quoteText, setQuoteText] = useState('불러오는 중…');
+  const [randomImageUrl, setRandomImageUrl] = useState(null);
 
   const figmaFallbackQuote = useMemo(
     () =>
@@ -40,6 +41,39 @@ export function useEndLogic() {
     setDateText(
       `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}`
     );
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    async function run() {
+      try {
+        let exclude = '';
+        try {
+          exclude = localStorage.getItem('platforml:lastCardImageUrl') || '';
+        } catch (_) {
+          exclude = '';
+        }
+
+        const qs = exclude ? `?exclude=${encodeURIComponent(exclude)}` : '';
+        const r = await fetch(`/api/random-public-image${qs}`);
+        const data = await r.json().catch(() => ({}));
+        const url = typeof data?.url === 'string' ? data.url : null;
+        if (!cancelled) setRandomImageUrl(url || null);
+        if (url) {
+          try {
+            localStorage.setItem('platforml:lastCardImageUrl', url);
+          } catch (_) {
+            // ignore
+          }
+        }
+      } catch (_) {
+        if (!cancelled) setRandomImageUrl(null);
+      }
+    }
+    run();
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   useEffect(() => {
@@ -93,13 +127,38 @@ export function useEndLogic() {
     return () => clearTimeout(t);
   }, []);
 
+  const sendToWall = useCallback(() => {
+    const payload = {
+      text: quoteText,
+      date: dateText,
+      imageUrl: randomImageUrl || '',
+    };
+    try {
+      if (navigator.sendBeacon) {
+        const blob = new Blob([JSON.stringify(payload)], { type: 'application/json' });
+        navigator.sendBeacon('/api/wall-send', blob);
+        return;
+      }
+    } catch (_) {
+      // ignore
+    }
+    // fallback
+    fetch('/api/wall-send', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+      keepalive: true,
+    }).catch(() => {});
+  }, [quoteText, dateText, randomImageUrl]);
+
   const goNext = useCallback(() => {
     if (!flipped || isFadingOut) return;
+    sendToWall();
     setIsFadingOut(true);
     setTimeout(() => {
       router.push('/end2');
     }, 700);
-  }, [router, flipped, isFadingOut]);
+  }, [router, flipped, isFadingOut, sendToWall]);
 
   const onTouchStart = useCallback((e) => {
     setTouchStartY(e.touches[0].clientY);
@@ -131,6 +190,7 @@ export function useEndLogic() {
     onWheel,
     dateText,
     quoteText,
+    randomImageUrl,
   };
 }
 
