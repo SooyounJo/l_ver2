@@ -6,6 +6,8 @@ const cx = (...names) => names.filter(Boolean).map((n) => styles[n]).filter(Bool
 export default function LandingScreen() {
   const {
     phase,
+    blurPx,
+    overlayOpacity,
     handleTouchStart,
     handleTouchEnd,
     handleMouseDown,
@@ -15,7 +17,15 @@ export default function LandingScreen() {
   } = useLandingLogic();
 
   return (
-    <div className={styles['landing-page']} onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
+    <div
+      className={styles['landing-page']}
+      style={{
+        '--landing-blur': `${blurPx}px`,
+        '--landing-overlay-opacity': overlayOpacity,
+      }}
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
+    >
       <div className={styles['landing-indicator']}>
         <span className={cx('landing-dot', 'active')} aria-current="true" />
         <span className={styles['landing-dot']} />

@@ -39,14 +39,48 @@
   z-index: 1;
 }
 
-.end2-title {
+.end2-text-section {
   position: absolute;
   left: 27px;
   top: 146px;
+  text-align: left;
+}
+
+.end2-title {
   font-size: 40px;
   font-weight: 400;
   line-height: 1.2;
   color: #fff;
+  text-shadow: 0 4px 17.3px rgba(0, 0, 0, 0.55);
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+
+.end2-title-line {
+  display: block;
+}
+
+.end2-divider-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 0.8rem;
+}
+
+.end2-divider {
+  width: 42px;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.92);
+  flex-shrink: 0;
+  box-shadow: 0 4px 17.3px rgba(0, 0, 0, 0.35);
+}
+
+.end2-author {
+  font-size: 14px;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.92);
+  line-height: 1.2;
+  margin: 0;
   text-shadow: 0 4px 17.3px rgba(0, 0, 0, 0.55);
 }
 
@@ -54,7 +88,9 @@
   position: absolute;
   left: 27px;
   top: 537px;
-  width: 193px;
+  width: auto;
+  max-width: 90%;
+  white-space: nowrap;
   font-size: 24px;
   font-weight: 400;
   line-height: 1.25;
@@ -69,9 +105,12 @@
   width: 83px;
   height: 82px;
   border-radius: 55px;
-  background: linear-gradient(180deg, #242424 14.904%, #8a8a8a 100%);
-  filter: blur(7.75px);
-  opacity: 0.95;
+  background: rgba(255, 255, 255, 0.9);
+  filter: blur(10px);
+  opacity: 0.78;
+  box-shadow: 0 0 30px rgba(255, 255, 255, 0.25);
+  will-change: opacity, transform;
+  animation: end2ExitPulse 1.7s ease-in-out infinite;
 }
 
 .end2-exit-text {
@@ -81,11 +120,14 @@
   transform: translateX(-50%);
   width: 121px;
   text-align: center;
-  font-size: 24px;
+  font-size: 18px;
   font-weight: 400;
   line-height: 1.2;
   color: #fffcf1;
   user-select: none;
+  text-shadow: 0 4px 17.3px rgba(0, 0, 0, 0.35);
+  will-change: opacity, transform;
+  animation: end2ExitTextPulse 1.7s ease-in-out infinite;
 }
 
 .end2-exit-hit {
@@ -102,3 +144,32 @@
   -webkit-tap-highlight-color: transparent;
 }
 
+@keyframes end2ExitPulse {
+  0% {
+    opacity: 0.35;
+    transform: translateY(8px) scale(0.98);
+  }
+  45% {
+    opacity: 0.82;
+    transform: translateY(0px) scale(1);
+  }
+  100% {
+    opacity: 0.35;
+    transform: translateY(8px) scale(0.98);
+  }
+}
+
+@keyframes end2ExitTextPulse {
+  0% {
+    opacity: 0.25;
+    transform: translateX(-50%) translateY(6px);
+  }
+  45% {
+    opacity: 0.9;
+    transform: translateX(-50%) translateY(0px);
+  }
+  100% {
+    opacity: 0.25;
+    transform: translateX(-50%) translateY(6px);
+  }
+}

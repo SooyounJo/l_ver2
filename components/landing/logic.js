@@ -2,22 +2,48 @@ import { useRef, useCallback, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 
 const SWIPE_THRESHOLD = 30;
+const EXPAND_DURATION_MS = 750;
+const SHARPEN_DELAY_MS = 550;
+const NAVIGATE_DELAY_MS = 1050;
 
 export function useLandingLogic() {
   const router = useRouter();
   const startY = useRef(0);
   const touchActive = useRef(false);
   const isTransitioning = useRef(false);
+  const timersRef = useRef([]);
 
   // 0: 초기, 1: text박스 상태(멈춤), 2: 이동 중
   const [phase, setPhase] = useState(0);
+  const [blurPx, setBlurPx] = useState(0);
+  const [overlayOpacity, setOverlayOpacity] = useState(0);
 
   const expandToTextBox = useCallback(() => {
     if (phase !== 0 || isTransitioning.current) return;
     isTransitioning.current = true;
+
+    // 카드가 올라오는 동안 전체 블러 → 도착 후 선명해짐
+    setBlurPx(12);
+    setOverlayOpacity(1);
     setPhase(1);
-    isTransitioning.current = false;
-  }, [phase]);
+
+    const t1 = setTimeout(() => {
+      setBlurPx(0);
+      setOverlayOpacity(0);
+    }, SHARPEN_DELAY_MS);
+
+    const t2 = setTimeout(() => {
+      router.push('/text');
+    }, NAVIGATE_DELAY_MS);
+
+    timersRef.current.push(t1, t2);
+
+    // transition은 타이머 기반으로 막아둠
+    const t3 = setTimeout(() => {
+      isTransitioning.current = false;
+    }, EXPAND_DURATION_MS);
+    timersRef.current.push(t3);
+  }, [phase, router]);
 
   const goToTextPage = useCallback(() => {
     if (phase !== 1 || isTransitioning.current) return;
@@ -102,8 +128,17 @@ export function useLandingLogic() {
     };
   }, [handleAction]);
 
+  useEffect(() => {
+    return () => {
+      timersRef.current.forEach((t) => clearTimeout(t));
+      timersRef.current = [];
+    };
+  }, []);
+
   return {
     phase,
+    blurPx,
+    overlayOpacity,
     handleTouchStart,
     handleTouchEnd,
     handleMouseDown,

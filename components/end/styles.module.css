@@ -79,6 +79,8 @@
   width: 367px;
   height: 632px;
   perspective: 1200px;
+  will-change: transform;
+  animation: endCardFloat 4.8s ease-in-out infinite;
 }
 
 .end-flip-inner {
@@ -277,6 +279,8 @@
   line-height: 1.2;
   color: #fffcf1;
   font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Malgun Gothic', sans-serif;
+  will-change: transform, opacity;
+  animation: endHintTextPulse 1.7s ease-in-out infinite;
 }
 
 .end-send-arrow {
@@ -286,5 +290,48 @@
   width: 83px;
   height: 174px;
   object-fit: contain;
+  will-change: transform, opacity;
+  animation: endHintArrowPulse 1.7s ease-in-out infinite;
 }
 
+@keyframes endHintTextPulse {
+  0% {
+    opacity: 0.18;
+    transform: translateX(-50%) translateY(6px);
+  }
+  45% {
+    opacity: 0.9;
+    transform: translateX(-50%) translateY(0px);
+  }
+  100% {
+    opacity: 0.18;
+    transform: translateX(-50%) translateY(6px);
+  }
+}
+
+@keyframes endHintArrowPulse {
+  0% {
+    opacity: 0.18;
+    transform: translateY(10px);
+  }
+  45% {
+    opacity: 0.9;
+    transform: translateY(0px);
+  }
+  100% {
+    opacity: 0.18;
+    transform: translateY(10px);
+  }
+}
+
+@keyframes endCardFloat {
+  0% {
+    transform: translateY(0px) rotateZ(-0.25deg);
+  }
+  50% {
+    transform: translateY(-8px) rotateZ(0.25deg);
+  }
+  100% {
+    transform: translateY(0px) rotateZ(-0.25deg);
+  }
+}

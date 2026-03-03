@@ -15,6 +15,22 @@
   padding-bottom: 0;
   overflow: hidden;
   position: relative;
+  --landing-blur: 0px;
+  --landing-overlay-opacity: 0;
+}
+
+/* 스크롤로 카드 올릴 때 전체 블러 오버레이 */
+.landing-page::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+  opacity: var(--landing-overlay-opacity);
+  backdrop-filter: blur(var(--landing-blur));
+  -webkit-backdrop-filter: blur(var(--landing-blur));
+  background: rgba(255, 255, 255, 0.02);
+  transition: opacity 0.45s ease, backdrop-filter 0.45s ease;
 }
 
 /* 페이지 인디케이터 */
@@ -31,12 +47,18 @@
   width: clamp(0.35rem, 4vw, 1rem);
   height: clamp(0.35rem, 4vw, 1rem);
   border-radius: 50%;
-  background: rgba(100, 100, 100, 0.35);
-  transition: background 0.2s;
+  background: rgba(255, 255, 255, 0.32);
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.22);
+  filter: blur(0.15px);
+  transition: background 0.2s, box-shadow 0.2s, opacity 0.2s;
+  opacity: 0.55;
 }
 
 .active {
-  background: #646464;
+  background: rgba(255, 255, 255, 0.82);
+  box-shadow: 0 0 14px rgba(255, 255, 255, 0.55);
+  filter: blur(0px);
+  opacity: 0.95;
 }
 
 /* Figma: 제목 left 27px top 146px, 40px, #646464, line-height 1.2 */

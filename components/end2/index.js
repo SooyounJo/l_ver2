@@ -12,14 +12,20 @@ export default function End2Screen() {
           transform: `translate(-50%, -50%) scale(${scale})`,
         }}
       >
-        <div className={styles['end2-title']} aria-hidden="true">
-          <div>무라카미</div>
-          <div>하루키전</div>
-        </div>
+        <section className={styles['end2-text-section']} aria-hidden="true">
+          <h1 className={styles['end2-title']}>
+            <span className={styles['end2-title-line']}>무라카미</span>
+            <span className={styles['end2-title-line']}>하루키전</span>
+          </h1>
+          <div className={styles['end2-divider-wrap']}>
+            <div className={styles['end2-divider']} />
+            <p className={styles['end2-author']}>안자이 미즈마루</p>
+          </div>
+        </section>
 
         <div className={styles['end2-desc']} aria-hidden="true">
-          <div>미디어 월에 추가된</div>
-          <div>나의 엽서를 확인해보세요</div>
+        <div>미디어 월에 추가된</div>
+        <div>나의 엽서를 확인해보세요</div>
         </div>
 
         <div className={styles['end2-exit-pill']} aria-hidden="true" />

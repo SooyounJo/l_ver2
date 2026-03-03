@@ -1,3 +1,4 @@
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTextLogic } from './logic';
 import styles from './styles.module.css';
 
@@ -16,9 +17,48 @@ export default function TextScreen() {
     handleWheel,
   } = useTextLogic();
 
+  const hasText = inputValue.trim().length > 0;
+  const [introOn, setIntroOn] = useState(false);
+  const questionLines = useMemo(() => ['무라카미 하루키에게', '딱 한 문장만 보낼 수 있다면', '무엇을 말하고 싶으세요?'], []);
+  const questionText = useMemo(() => questionLines.join('\n'), [questionLines]);
+  const [typedText, setTypedText] = useState('');
+  const typingTimeoutRef = useRef(null);
+
+  useEffect(() => {
+    setIntroOn(true);
+  }, []);
+
+  useEffect(() => {
+    // StrictMode(개발)에서 effect가 2번 실행되어도 중복 타이핑이 안 나도록 정리
+    if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
+
+    let idx = 0;
+    let cancelled = false;
+
+    setTypedText('');
+
+    const tick = () => {
+      if (cancelled) return;
+      idx += 1;
+      setTypedText(questionText.slice(0, idx));
+
+      if (idx >= questionText.length) return;
+
+      const ch = questionText[idx] || '';
+      const delay = ch === '\n' ? 220 : ch === ' ' ? 20 : 35;
+      typingTimeoutRef.current = setTimeout(tick, delay);
+    };
+
+    typingTimeoutRef.current = setTimeout(tick, 220);
+    return () => {
+      cancelled = true;
+      if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
+    };
+  }, [questionText]);
+
   return (
     <div className={styles['text-figma-page']} onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd} onWheel={handleWheel}>
-      <div className={cx('text-figma-card', isExiting && 'text-figma-card-exit')}>
+      <div className={cx('text-figma-card', introOn && 'text-figma-intro', isExiting && 'text-figma-card-exit')}>
         <div className={styles['text-figma-indicator']}>
           <span className={styles['text-figma-dot']} />
           <span className={cx('text-figma-dot', 'active')} aria-current="true" />
@@ -26,13 +66,16 @@ export default function TextScreen() {
         </div>
 
         <h2 className={styles['text-figma-question']}>
-          <p>무라카미 하루키에게</p>
-          <p>딱 한 문장만 보낼 수 있다면</p>
-          <p>무엇을 말하고 싶으세요?</p>
+          {questionLines.map((line, i) => {
+            const parts = typedText.split('\n');
+            return <p key={line}>{parts[i] || ''}</p>;
+          })}
         </h2>
 
         <div className={styles['text-figma-quote-block']}>
-          <span className={styles['text-figma-quote-open']}>&apos;</span>
+          <span className={styles['text-figma-quote-open']} aria-hidden="true">
+            “
+          </span>
           <div className={styles['text-figma-quote-wrap']}>
             <textarea
               ref={textareaRef}
@@ -50,19 +93,23 @@ export default function TextScreen() {
               aria-label="무라카미 하루키에게 보낼 한 문장"
             />
           </div>
-          <span className={styles['text-figma-quote-close']}>&apos;</span>
+          <span className={styles['text-figma-quote-close']} aria-hidden="true">
+            ”
+          </span>
         </div>
 
         <span className={styles['text-figma-date']}>{dateText}</span>
-      </div>
 
-      {inputValue.trim().length > 0 && (
-        <p className={styles['text-figma-slide-hint']}>
-          <span>위로 슬라이드 하여</span>
-          <br />
-          <span>미디어 월로 전송</span>
-        </p>
-      )}
+        {!hasText ? (
+          <p className={styles['text-figma-below-card-hint']}>터치하여 타이핑</p>
+        ) : (
+          <p className={cx('text-figma-below-card-hint', 'text-figma-slide-hint')}>
+            <span>위로 슬라이드 하여</span>
+            <br />
+            <span>미디어 월로 전송</span>
+          </p>
+        )}
+      </div>
     </div>
   );
 }
