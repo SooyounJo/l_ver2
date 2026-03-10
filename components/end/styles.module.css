@@ -247,13 +247,52 @@
 }
 
 .end-back-date {
-  position: absolute;
-  left: 276px;
-  top: 484px;
+  position: relative;
+  right: 6px;
   font-size: 14px;
   line-height: 1.2;
   color: #000;
   font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Malgun Gothic', sans-serif;
+}
+
+.end-back-meta {
+  position: absolute;
+  right: 23px;
+  top: 484px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+}
+
+.end-back-save {
+  width: auto;
+  height: 36px;
+  padding: 0 16px;
+  position: relative;
+  right: -3px;
+  border: none;
+  border-radius: 16px;
+  background: linear-gradient(180deg, rgba(210, 210, 210, 0.78) 0%, rgba(160, 160, 160, 0.62) 100%);
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.22);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  color: rgba(0, 0, 0, 0.88);
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  white-space: nowrap;
+}
+
+.end-back-save:active {
+  transform: translateY(1px) scale(0.99);
+}
+
+.end-back-save:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.9);
+  outline-offset: 3px;
 }
 
 .end-back-quote {
@@ -289,7 +328,7 @@
   top: 762px;
   width: 83px;
   height: 174px;
-  object-fit: contain;
+  display: block;
   will-change: transform, opacity;
   animation: endHintArrowPulse 1.7s ease-in-out infinite;
 }

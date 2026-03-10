@@ -3,7 +3,6 @@ import styles from './styles.module.css';
 
 const fallbackCardFront = 'https://www.figma.com/api/mcp/asset/4e65a0b4-ac2b-4825-9528-e185f30b0887';
 const fallbackCardBack = 'https://www.figma.com/api/mcp/asset/1e942af0-dbf6-4155-b3da-952595d7ab1f';
-const imgArrowFrame = 'https://www.figma.com/api/mcp/asset/12e3e69b-1d2f-4bb5-835d-355f89712ca3';
 
 const cx = (...names) => names.filter(Boolean).map((n) => styles[n]).filter(Boolean).join(' ');
 
@@ -72,7 +71,12 @@ export default function EndScreen() {
               <div className={styles['end-back-img']} aria-hidden="true">
                 <img src={cardImage} alt="" />
               </div>
-              <div className={styles['end-back-date']}>{dateText}</div>
+              <div className={styles['end-back-meta']}>
+                <div className={styles['end-back-date']}>{dateText}</div>
+                <button type="button" className={styles['end-back-save']}>
+                  저장하기
+                </button>
+              </div>
               <div className={styles['end-back-quote']}>{quoteText}</div>
             </div>
           </div>
@@ -84,7 +88,23 @@ export default function EndScreen() {
               <div>위로 슬라이드 하여</div>
               <div>미디어 월로 전송</div>
             </div>
-            <img className={styles['end-send-arrow']} src={imgArrowFrame} alt="" aria-hidden="true" />
+            <svg
+              className={styles['end-send-arrow']}
+              viewBox="0 0 83 174"
+              fill="none"
+              aria-hidden="true"
+              focusable="false"
+            >
+              <rect x="6" y="6" width="71" height="162" rx="18" stroke="rgba(255, 255, 255, 0.28)" strokeWidth="2" />
+              <path d="M41.5 118V62" stroke="rgba(255, 255, 255, 0.55)" strokeWidth="3" strokeLinecap="round" />
+              <path
+                d="M30 73.5L41.5 62L53 73.5"
+                stroke="rgba(255, 255, 255, 0.55)"
+                strokeWidth="3"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
           </>
         )}
       </div>
