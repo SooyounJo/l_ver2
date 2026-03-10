@@ -1,0 +1,16 @@
+<svg preserveAspectRatio="none" width="100%" height="100%" overflow="visible" style="display: block;" viewBox="0 0 123.6 214.6" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Frame 185">
+<line id="Line 4" x1="45.8858" y1="59.8779" x2="63.8779" y2="41.8858" stroke="var(--stroke-0, #FBFAF6)" stroke-width="4"/>
+<line id="Line 5" x1="79.6954" y1="60.5312" x2="63.8784" y2="44.7142" stroke="var(--stroke-0, #FBFAF6)" stroke-width="4"/>
+<g id="Rectangle 16" filter="url(#filter0_f_0_4)">
+<rect x="20.3" y="20.3" width="83" height="174" rx="41.5" fill="var(--fill-0, #606060)" fill-opacity="0.44"/>
+</g>
+</g>
+<defs>
+<filter id="filter0_f_0_4" x="0" y="0" width="123.6" height="214.6" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
+<feGaussianBlur stdDeviation="10.15" result="effect1_foregroundBlur_0_4"/>
+</filter>
+</defs>
+</svg>

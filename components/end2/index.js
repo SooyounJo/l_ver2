@@ -1,8 +1,8 @@
 import { useEnd2Logic } from './logic';
 import styles from './styles.module.css';
 
-export default function End2Screen() {
-  const { scale, goHome, onTouchStart, onTouchEnd, onWheel } = useEnd2Logic();
+export default function End2Screen({ onRestart } = {}) {
+  const { scale, goHome, onTouchStart, onTouchEnd, onWheel } = useEnd2Logic({ onRestart });
 
   return (
     <div className={styles['end2-page']} onTouchStart={onTouchStart} onTouchEnd={onTouchEnd} onWheel={onWheel}>

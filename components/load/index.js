@@ -1,9 +1,9 @@
 import { useLoadLogic } from './logic';
 import styles from './styles.module.css';
 
-const imgCardA = 'https://www.figma.com/api/mcp/asset/879db829-92ed-4c86-9cb1-67f88f3a2d4b';
-const imgCardB = 'https://www.figma.com/api/mcp/asset/09816a73-0c41-4547-a09f-56d92866ceaf';
-const imgCardC = 'https://www.figma.com/api/mcp/asset/b8dabb5e-9c89-4242-9166-0c69fca4be89';
+const imgCardA = '/img/PIPA2021000122_02.jpg';
+const imgCardB = '/img/PIPA2021000127_02.jpg';
+const imgCardC = '/img/PIPA2021000131_02.jpg';
 
 const cx = (...names) => names.filter(Boolean).map((n) => styles[n]).filter(Boolean).join(' ');
 
@@ -23,8 +23,8 @@ function LoadingAnimSet({ swayLastCard = false }) {
   );
 }
 
-export default function LoadScreen() {
-  useLoadLogic();
+export default function LoadScreen({ onDone } = {}) {
+  useLoadLogic({ onDone });
 
   return (
     <div className={styles['load-figma-page']}>

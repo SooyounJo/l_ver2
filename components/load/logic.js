@@ -1,8 +1,13 @@
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useRouter } from 'next/router';
 
-export function useLoadLogic() {
+export function useLoadLogic({ onDone } = {}) {
   const router = useRouter();
+
+  const goDone = useCallback(() => {
+    if (typeof onDone === 'function') return onDone();
+    router.push('/end');
+  }, [onDone, router]);
 
   useEffect(() => {
     const prevHtmlOverflow = document.documentElement.style.overflow;
@@ -25,9 +30,9 @@ export function useLoadLogic() {
 
   useEffect(() => {
     const t = setTimeout(() => {
-      router.push('/end');
+      goDone();
     }, 6000);
     return () => clearTimeout(t);
-  }, [router]);
+  }, [goDone]);
 }
 

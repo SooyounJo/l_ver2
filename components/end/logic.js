@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState, useCallback } from 'react';
 import { useRouter } from 'next/router';
 
-export function useEndLogic() {
+export function useEndLogic({ onNext } = {}) {
   const router = useRouter();
   const [scale, setScale] = useState(1);
   const [flipped, setFlipped] = useState(false);
@@ -48,6 +48,7 @@ export function useEndLogic() {
     async function run() {
       try {
         let history = [];
+        let recentSession = [];
         try {
           const raw = localStorage.getItem('platforml:cardImageHistory') || '[]';
           const parsed = JSON.parse(raw);
@@ -56,8 +57,17 @@ export function useEndLogic() {
           history = [];
         }
 
-        const recent = history.slice(-5);
-        const qs = recent.length > 0 ? `?exclude=${encodeURIComponent(recent.join(','))}` : '';
+        try {
+          const rawSession = localStorage.getItem('platforml:cardImageSession') || '[]';
+          const parsedSession = JSON.parse(rawSession);
+          recentSession = Array.isArray(parsedSession) ? parsedSession.filter((v) => typeof v === 'string') : [];
+        } catch (_) {
+          recentSession = [];
+        }
+
+        const recentHistory = history.slice(-8);
+        const excludePool = [...new Set([...recentHistory, ...recentSession])];
+        const qs = excludePool.length > 0 ? `?exclude=${encodeURIComponent(excludePool.join(','))}` : '';
         const r = await fetch(`/api/random-public-image${qs}`);
         const data = await r.json().catch(() => ({}));
         const url = typeof data?.url === 'string' ? data.url : null;
@@ -66,6 +76,9 @@ export function useEndLogic() {
           try {
             const next = [...history.filter((u) => u !== url), url].slice(-20);
             localStorage.setItem('platforml:cardImageHistory', JSON.stringify(next));
+
+            const updatedSession = [...recentSession.filter((u) => u !== url), url].slice(-4);
+            localStorage.setItem('platforml:cardImageSession', JSON.stringify(updatedSession));
           } catch (_) {
             // ignore
           }
@@ -155,14 +168,19 @@ export function useEndLogic() {
     }).catch(() => {});
   }, [quoteText, dateText, randomImageUrl]);
 
+  const goNextPage = useCallback(() => {
+    if (typeof onNext === 'function') return onNext();
+    router.push('/end2');
+  }, [onNext, router]);
+
   const goNext = useCallback(() => {
     if (!flipped || isFadingOut) return;
     sendToWall();
     setIsFadingOut(true);
     setTimeout(() => {
-      router.push('/end2');
+      goNextPage();
     }, 700);
-  }, [router, flipped, isFadingOut, sendToWall]);
+  }, [flipped, isFadingOut, sendToWall, goNextPage]);
 
   const onTouchStart = useCallback((e) => {
     setTouchStartY(e.touches[0].clientY);

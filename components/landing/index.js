@@ -3,7 +3,7 @@ import styles from './styles.module.css';
 
 const cx = (...names) => names.filter(Boolean).map((n) => styles[n]).filter(Boolean).join(' ');
 
-export default function LandingScreen() {
+ export default function LandingScreen({ onNext } = {}) {
   const {
     phase,
     blurPx,
@@ -14,7 +14,7 @@ export default function LandingScreen() {
     handleMouseUp,
     handleWheel,
     handleClick,
-  } = useLandingLogic();
+  } = useLandingLogic({ onNext });
 
   return (
     <div

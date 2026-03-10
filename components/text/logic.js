@@ -1,7 +1,7 @@
 import { useState, useRef, useCallback, useEffect } from 'react';
 import { useRouter } from 'next/router';
 
-export function useTextLogic() {
+export function useTextLogic({ onNext } = {}) {
   const router = useRouter();
   const [inputValue, setInputValue] = useState('');
   const [touchStartY, setTouchStartY] = useState(null);
@@ -55,13 +55,18 @@ export function useTextLogic() {
     }
   }, [inputValue]);
 
+  const goNextPage = useCallback(() => {
+    if (typeof onNext === 'function') return onNext();
+    router.push('/load');
+  }, [onNext, router]);
+
   const goNext = useCallback(() => {
     persistInput();
     setIsExiting(true);
     setTimeout(() => {
-      router.push('/load');
+      goNextPage();
     }, 500);
-  }, [persistInput, router]);
+  }, [persistInput, goNextPage]);
 
   const handleTouchStart = useCallback((e) => {
     setTouchStartY(e.touches[0].clientY);

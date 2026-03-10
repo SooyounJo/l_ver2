@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useRouter } from 'next/router';
 
-export function useEnd2Logic() {
+export function useEnd2Logic({ onRestart } = {}) {
   const router = useRouter();
   const [scale, setScale] = useState(1);
   const [touchStartY, setTouchStartY] = useState(null);
@@ -36,8 +36,9 @@ export function useEnd2Logic() {
   }, []);
 
   const goHome = useCallback(() => {
+    if (typeof onRestart === 'function') return onRestart();
     router.push('/landing');
-  }, [router]);
+  }, [onRestart, router]);
 
   const onTouchStart = useCallback((e) => {
     setTouchStartY(e.touches[0].clientY);

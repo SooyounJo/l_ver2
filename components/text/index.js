@@ -4,7 +4,7 @@ import styles from './styles.module.css';
 
 const cx = (...names) => names.filter(Boolean).map((n) => styles[n]).filter(Boolean).join(' ');
 
-export default function TextScreen() {
+export default function TextScreen({ onNext } = {}) {
   const {
     inputValue,
     setInputValue,
@@ -15,7 +15,7 @@ export default function TextScreen() {
     handleTouchStart,
     handleTouchEnd,
     handleWheel,
-  } = useTextLogic();
+  } = useTextLogic({ onNext });
 
   const hasText = inputValue.trim().length > 0;
   const [introOn, setIntroOn] = useState(false);

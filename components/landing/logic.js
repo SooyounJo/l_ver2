@@ -6,7 +6,7 @@ const EXPAND_DURATION_MS = 750;
 const SHARPEN_DELAY_MS = 550;
 const NAVIGATE_DELAY_MS = 1050;
 
-export function useLandingLogic() {
+export function useLandingLogic({ onNext } = {}) {
   const router = useRouter();
   const startY = useRef(0);
   const touchActive = useRef(false);
@@ -17,6 +17,11 @@ export function useLandingLogic() {
   const [phase, setPhase] = useState(0);
   const [blurPx, setBlurPx] = useState(0);
   const [overlayOpacity, setOverlayOpacity] = useState(0);
+
+  const goNext = useCallback(() => {
+    if (typeof onNext === 'function') return onNext();
+    router.push('/text');
+  }, [onNext, router]);
 
   const expandToTextBox = useCallback(() => {
     if (phase !== 0 || isTransitioning.current) return;
@@ -33,7 +38,7 @@ export function useLandingLogic() {
     }, SHARPEN_DELAY_MS);
 
     const t2 = setTimeout(() => {
-      router.push('/text');
+      goNext();
     }, NAVIGATE_DELAY_MS);
 
     timersRef.current.push(t1, t2);
@@ -43,14 +48,14 @@ export function useLandingLogic() {
       isTransitioning.current = false;
     }, EXPAND_DURATION_MS);
     timersRef.current.push(t3);
-  }, [phase, router]);
+  }, [phase, goNext]);
 
   const goToTextPage = useCallback(() => {
     if (phase !== 1 || isTransitioning.current) return;
     isTransitioning.current = true;
     setPhase(2);
-    setTimeout(() => router.push('/text'), 900);
-  }, [phase, router]);
+    setTimeout(() => goNext(), 900);
+  }, [phase, goNext]);
 
   const handleAction = useCallback(() => {
     if (phase === 0) expandToTextBox();

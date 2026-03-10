@@ -1,12 +1,13 @@
+import { useCallback, useMemo, useState } from 'react';
 import { useEndLogic } from './logic';
 import styles from './styles.module.css';
 
-const fallbackCardFront = 'https://www.figma.com/api/mcp/asset/4e65a0b4-ac2b-4825-9528-e185f30b0887';
-const fallbackCardBack = 'https://www.figma.com/api/mcp/asset/1e942af0-dbf6-4155-b3da-952595d7ab1f';
+const fallbackCardFront = '/img/PIPA2021000135_02.jpg';
+const fallbackCardBack = '/img/PIPA2021000138_02.jpg';
 
 const cx = (...names) => names.filter(Boolean).map((n) => styles[n]).filter(Boolean).join(' ');
 
-export default function EndScreen() {
+export default function EndScreen({ onNext } = {}) {
   const {
     scale,
     flipped,
@@ -17,10 +18,67 @@ export default function EndScreen() {
     dateText,
     quoteText,
     randomImageUrl,
-  } = useEndLogic();
+  } = useEndLogic({ onNext });
 
   const cardImage = randomImageUrl || fallbackCardBack;
   const frontImage = randomImageUrl || fallbackCardFront;
+
+  const [saving, setSaving] = useState(false);
+
+  const downloadName = useMemo(() => {
+    const d = new Date();
+    const pad = (n) => String(n).padStart(2, '0');
+    return `platforml-postcard-${d.getFullYear()}${pad(d.getMonth() + 1)}${pad(d.getDate())}-${pad(d.getHours())}${pad(
+      d.getMinutes()
+    )}${pad(d.getSeconds())}.jpg`;
+  }, []);
+
+  const handleSave = useCallback(
+    async (e) => {
+      e?.preventDefault?.();
+      e?.stopPropagation?.();
+      if (saving) return;
+      setSaving(true);
+
+      const href = typeof cardImage === 'string' ? cardImage : '';
+      if (!href) {
+        setSaving(false);
+        return;
+      }
+
+      try {
+        // 1) Prefer Web Share (works well on mobile, esp. iOS)
+        const r = await fetch(href, { cache: 'no-store' });
+        const blob = await r.blob();
+        const fileType = blob.type || (href.endsWith('.png') ? 'image/png' : 'image/jpeg');
+        const file = new File([blob], downloadName, { type: fileType });
+
+        if (navigator?.canShare && navigator.canShare({ files: [file] }) && navigator?.share) {
+          await navigator.share({ files: [file], title: 'Postcard' });
+          return;
+        }
+
+        // 2) Fallback: force download via blob URL (more reliable than direct link)
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = downloadName;
+        a.rel = 'noopener';
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+      } catch (_) {
+        // 3) Last fallback: open the image in a new tab
+        try {
+          window.open(href, '_blank', 'noopener,noreferrer');
+        } catch (_) {}
+      } finally {
+        setTimeout(() => setSaving(false), 450);
+      }
+    },
+    [saving, cardImage, downloadName]
+  );
 
   return (
     <div
@@ -73,7 +131,14 @@ export default function EndScreen() {
               </div>
               <div className={styles['end-back-meta']}>
                 <div className={styles['end-back-date']}>{dateText}</div>
-                <button type="button" className={styles['end-back-save']}>
+                <button
+                  type="button"
+                  className={styles['end-back-save']}
+                  data-saving={saving ? 'true' : 'false'}
+                  onPointerDown={(e) => e.stopPropagation()}
+                  onTouchStart={(e) => e.stopPropagation()}
+                  onClick={handleSave}
+                >
                   저장하기
                 </button>
               </div>

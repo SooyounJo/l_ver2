@@ -1,38 +1,45 @@
 import { useEffect, useState } from 'react';
-import { io } from 'socket.io-client';
+import { connectSocket } from '@/lib/socket/client';
+import { EVENTS } from '@/lib/socket/events';
 
 export function useWallLogic() {
   const [status, setStatus] = useState('connecting');
-  const [card, setCard] = useState(null);
+  const [cards, setCards] = useState([]);
 
   useEffect(() => {
     let socket;
     let cancelled = false;
 
     async function init() {
-      try {
-        // init server
-        await fetch('/api/socketio');
-      } catch (_) {
-        // ignore
-      }
-
       if (cancelled) return;
 
-      socket = io({
-        path: '/api/socketio',
-      });
+      socket = await connectSocket();
 
       socket.on('connect', () => setStatus('connected'));
       socket.on('disconnect', () => setStatus('disconnected'));
       socket.on('connect_error', () => setStatus('error'));
 
-      socket.on('wall:last', (payload) => {
-        setCard(payload);
+      socket.on(EVENTS.WALL_LAST, (payload) => {
+        if (!payload || typeof payload !== 'object') {
+          setCards([]);
+          return;
+        }
+        setCards([payload]);
       });
 
-      socket.on('card:sent', (payload) => {
-        setCard(payload);
+      socket.on(EVENTS.CARD_SENT, (payload) => {
+        if (!payload || typeof payload !== 'object') return;
+        setCards((prev) => {
+          const next = {
+            ...payload,
+          };
+          const existing = prev.some((c) => c && c.sentAt === next.sentAt);
+          const merged = existing
+            ? prev.map((c) => (c && c.sentAt === next.sentAt ? next : c))
+            : [...prev, next];
+          // keep last 20 cards at most
+          return merged.slice(-20);
+        });
       });
     }
 
@@ -44,6 +51,6 @@ export function useWallLogic() {
     };
   }, []);
 
-  return { status, card };
+  return { status, cards };
 }
 
