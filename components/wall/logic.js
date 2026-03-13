@@ -2,9 +2,12 @@ import { useEffect, useState } from 'react';
 import { connectSocket } from '@/lib/socket/client';
 import { EVENTS } from '@/lib/socket/events';
 
+const PAUSE_TILES_MS = 2500;
+
 export function useWallLogic() {
   const [status, setStatus] = useState('connecting');
   const [cards, setCards] = useState([]);
+  const [lastInputAt, setLastInputAt] = useState(0);
 
   useEffect(() => {
     let socket;
@@ -24,11 +27,13 @@ export function useWallLogic() {
           setCards([]);
           return;
         }
+        setLastInputAt(Date.now());
         setCards([payload]);
       });
 
       socket.on(EVENTS.CARD_SENT, (payload) => {
         if (!payload || typeof payload !== 'object') return;
+        setLastInputAt(Date.now());
         setCards((prev) => {
           const next = {
             ...payload,
@@ -37,7 +42,6 @@ export function useWallLogic() {
           const merged = existing
             ? prev.map((c) => (c && c.sentAt === next.sentAt ? next : c))
             : [...prev, next];
-          // keep last 20 cards at most
           return merged.slice(-20);
         });
       });
@@ -51,6 +55,6 @@ export function useWallLogic() {
     };
   }, []);
 
-  return { status, cards };
+  return { status, cards, lastInputAt, pauseTilesMs: PAUSE_TILES_MS };
 }
 

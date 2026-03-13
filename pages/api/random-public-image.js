@@ -1,21 +1,33 @@
 import fs from 'fs';
 import path from 'path';
+import { getDriveImageUrls } from '@/lib/driveImages';
 
 function pickRandom(arr) {
   return arr[Math.floor(Math.random() * arr.length)];
 }
 
-function normalizeCopyName(fileName) {
-  // "xxx copy.jpg" -> "xxx.jpg"
-  return fileName.replace(/\s+copy(?=\.[^.]+$)/i, '');
+function pickRandomMultiple(arr, count) {
+  if (count >= arr.length) return [...arr];
+  const out = [];
+  const pool = [...arr];
+  for (let i = 0; i < count && pool.length > 0; i++) {
+    const idx = Math.floor(Math.random() * pool.length);
+    out.push(pool[idx]);
+    pool.splice(idx, 1);
+  }
+  return out;
 }
 
-function isCopyVariant(fileName) {
-  return /\s+copy(?=\.[^.]+$)/i.test(fileName);
+function getPublicImgUrls() {
+  const dir = path.join(process.cwd(), 'public', 'img');
+  if (!fs.existsSync(dir)) return [];
+  const raw = fs.readdirSync(dir).filter((f) => /\.(png|jpe?g|webp|gif)$/i.test(f));
+  return raw.map((f) => `/img/${f}`);
 }
 
 export default function handler(req, res) {
-  const dir = path.join(process.cwd(), 'public', 'img');
+  let urls = getDriveImageUrls();
+  if (urls.length === 0) urls = getPublicImgUrls();
   const excludeRaw = typeof req.query?.exclude === 'string' ? req.query.exclude : '';
   const excludes = excludeRaw
     ? excludeRaw
@@ -23,50 +35,29 @@ export default function handler(req, res) {
         .map((s) => s.trim())
         .filter(Boolean)
     : [];
+  const countParam = req.query?.count;
+  const count = countParam != null ? Math.max(0, parseInt(String(countParam), 10) || 0) : 0;
 
-  try {
-    if (!fs.existsSync(dir)) {
-      return res.status(200).json({
-        url: null,
-        warning: 'public/img directory does not exist',
-      });
-    }
-
-    const raw = fs.readdirSync(dir).filter((f) => /\.(png|jpe?g|webp|gif)$/i.test(f));
-
-    // copy 변형이 있으면 원본을 우선하고, 같은 base는 1개로 병합
-    const byBase = new Map();
-    for (const f of raw) {
-      const base = normalizeCopyName(f);
-      const prev = byBase.get(base);
-      if (!prev) {
-        byBase.set(base, f);
-        continue;
-      }
-      // 이미 원본이 있으면 유지, 원본이 없고 새 파일이 원본이면 교체
-      if (isCopyVariant(prev) && !isCopyVariant(f)) byBase.set(base, f);
-    }
-
-    const files = Array.from(byBase.values()).map((f) => `/img/${f}`);
-
-    if (files.length === 0) {
-      return res.status(200).json({
-        url: null,
-        warning: 'No images found in public/img',
-      });
-    }
-
-    let pool = files;
-    if (excludes.length > 0) {
-      const set = new Set(excludes);
-      const filtered = files.filter((u) => !set.has(u));
-      if (filtered.length > 0) pool = filtered;
-    }
-
-    const url = pickRandom(pool);
-    return res.status(200).json({ url });
-  } catch (e) {
-    return res.status(200).json({ url: null, warning: String(e?.message || e) });
+  if (urls.length === 0) {
+    return res.status(200).json({
+      url: null,
+      urls: [],
+      warning: 'No drive image URLs configured and public/img is empty',
+    });
   }
-}
 
+  let pool = urls;
+  if (excludes.length > 0) {
+    const set = new Set(excludes);
+    const filtered = urls.filter((u) => !set.has(u));
+    if (filtered.length > 0) pool = filtered;
+  }
+
+  if (count > 0) {
+    const picked = pickRandomMultiple(pool, count);
+    return res.status(200).json({ url: picked[0] ?? null, urls: picked });
+  }
+
+  const url = pickRandom(pool);
+  return res.status(200).json({ url, urls: [url] });
+}

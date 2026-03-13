@@ -1,9 +1,10 @@
 import { useCallback, useMemo, useState } from 'react';
+import { getFirstDriveImageUrl } from '@/lib/driveImages';
 import { useEndLogic } from './logic';
 import styles from './styles.module.css';
 
-const fallbackCardFront = '/img/PIPA2021000135_02.jpg';
-const fallbackCardBack = '/img/PIPA2021000138_02.jpg';
+const fallbackCardFront = getFirstDriveImageUrl();
+const fallbackCardBack = getFirstDriveImageUrl();
 
 const cx = (...names) => names.filter(Boolean).map((n) => styles[n]).filter(Boolean).join(' ');
 

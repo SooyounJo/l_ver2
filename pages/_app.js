@@ -6,7 +6,6 @@ export default function App({ Component, pageProps }) {
     <>
       <Head>
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, viewport-fit=cover" />
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/pretendard@5.0.1/index.min.css" crossOrigin="anonymous" />
       </Head>
       <Component {...pageProps} />
     </>

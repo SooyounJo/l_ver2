@@ -1,23 +1,21 @@
+import { useEffect, useState } from 'react';
 import { useLoadLogic } from './logic';
 import styles from './styles.module.css';
 
-const imgCardA = '/img/PIPA2021000122_02.jpg';
-const imgCardB = '/img/PIPA2021000127_02.jpg';
-const imgCardC = '/img/PIPA2021000131_02.jpg';
-
 const cx = (...names) => names.filter(Boolean).map((n) => styles[n]).filter(Boolean).join(' ');
 
-function LoadingAnimSet({ swayLastCard = false }) {
+function LoadingAnimSet({ imageUrls = [], swayLastCard = false }) {
+  const [urlA, urlB, urlC] = Array.isArray(imageUrls) ? imageUrls : [];
   return (
     <>
       <div className={cx('load-card', 'a')} aria-hidden="true">
-        <img src={imgCardA} alt="" />
+        {urlA ? <img src={urlA} alt="" /> : null}
       </div>
       <div className={cx('load-card', 'b')} aria-hidden="true">
-        <img src={imgCardB} alt="" />
+        {urlB ? <img src={urlB} alt="" /> : null}
       </div>
       <div className={cx('load-card', 'c', swayLastCard && 'sway')} aria-hidden="true">
-        <img src={imgCardC} alt="" />
+        {urlC ? <img src={urlC} alt="" /> : null}
       </div>
     </>
   );
@@ -25,16 +23,30 @@ function LoadingAnimSet({ swayLastCard = false }) {
 
 export default function LoadScreen({ onDone } = {}) {
   useLoadLogic({ onDone });
+  const [driveImageUrls, setDriveImageUrls] = useState([]);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetch('/api/random-public-image?count=3')
+      .then((r) => r.json())
+      .then((data) => {
+        if (cancelled) return;
+        const list = Array.isArray(data?.urls) ? data.urls : data?.url ? [data.url] : [];
+        setDriveImageUrls(list);
+      })
+      .catch(() => {});
+    return () => { cancelled = true; };
+  }, []);
 
   return (
     <div className={styles['load-figma-page']}>
       <div className={styles['load-anim-layer']} aria-hidden="true">
         <div className={styles['load-anim-track']}>
           <div style={{ position: 'absolute', inset: 0 }}>
-            <LoadingAnimSet />
+            <LoadingAnimSet imageUrls={driveImageUrls} />
           </div>
           <div style={{ position: 'absolute', inset: 0, transform: 'translateY(50%)' }}>
-            <LoadingAnimSet swayLastCard />
+            <LoadingAnimSet imageUrls={driveImageUrls} swayLastCard />
           </div>
         </div>
       </div>

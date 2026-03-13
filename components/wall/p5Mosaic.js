@@ -35,8 +35,6 @@ function makeFallbackGraphics(p, w = 320, h = 320) {
 export default function P5Mosaic() {
   const hostRef = useRef(null);
   const instanceRef = useRef(null);
-  const latestUrlRef = useRef(null);
-  const defaultTreeUrl = '/img/tree/tree.png';
 
   useEffect(() => {
     if (!hostRef.current) return;
@@ -174,7 +172,7 @@ export default function P5Mosaic() {
       p.setup = () => {
         p.createCanvas(p.windowWidth, p.windowHeight);
         p.noLoop();
-        loadAndRedraw(latestUrlRef.current);
+        loadAndRedraw(null);
       };
 
       p.draw = () => {
@@ -219,14 +217,6 @@ export default function P5Mosaic() {
       instanceRef.current = null;
     };
   }, []);
-
-  useEffect(() => {
-    latestUrlRef.current = defaultTreeUrl;
-    const inst = instanceRef.current;
-    if (inst && typeof inst.__platforml_setImageUrl === 'function') {
-      inst.__platforml_setImageUrl(latestUrlRef.current);
-    }
-  }, [defaultTreeUrl]);
 
   return <div ref={hostRef} style={{ position: 'absolute', inset: 0 }} />;
 }

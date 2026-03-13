@@ -1,14 +1,14 @@
 import styles from './styles.module.css';
 import { useWallLogic } from './logic';
-import P5Mosaic from './p5Mosaic';
 import PostcardSequence from './postcardSequence';
+import ScatteredTiles from './ScatteredTiles';
 
 export default function WallScreen() {
-  const { cards } = useWallLogic();
+  const { cards, lastInputAt, pauseTilesMs } = useWallLogic();
 
   return (
     <div className={styles.page}>
-      <P5Mosaic />
+      <ScatteredTiles lastInputAt={lastInputAt} pauseMs={pauseTilesMs} />
       {cards.map((card) =>
         card ? <PostcardSequence key={card.sentAt || card.sentAt === 0 ? String(card.sentAt) : Math.random()} card={card} /> : null
       )}
