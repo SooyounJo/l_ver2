@@ -45,7 +45,10 @@ export default function ScatteredTiles({ lastInputAt = 0, pauseMs = 2500 }) {
     return urls.slice(0, MAX_TILES).map((src, i) => {
       const left = 2 + seededFloat(i * 7, 86);
       const top = 2 + seededFloat(i * 11 + 3, 86);
-      const size = MIN_SIZE + Math.floor(seededFloat(i * 13 + 5, 1) * (MAX_SIZE - MIN_SIZE));
+      const base = MIN_SIZE + Math.floor(seededFloat(i * 13 + 5, 1) * (MAX_SIZE - MIN_SIZE));
+      const shape = seeded(i * 23, 3);
+      const width = shape === 0 ? base : shape === 1 ? Math.round(base * (1.15 + seededFloat(i * 31, 0.5))) : Math.round(base * (0.6 + seededFloat(i * 37, 0.35)));
+      const height = shape === 0 ? base : shape === 1 ? Math.round(base * (0.65 + seededFloat(i * 41, 0.35))) : Math.round(base * (1.2 + seededFloat(i * 43, 0.5)));
       const rotation = -14 + seededFloat(i * 17, 28);
       const animClass = styles[`anim${(i % ROUTINE_COUNT) + 1}`];
       const delay = seededFloat(i * 19, 8);
@@ -53,7 +56,8 @@ export default function ScatteredTiles({ lastInputAt = 0, pauseMs = 2500 }) {
         src,
         left,
         top,
-        size,
+        width,
+        height,
         rotation,
         animClass,
         delay,
@@ -74,8 +78,8 @@ export default function ScatteredTiles({ lastInputAt = 0, pauseMs = 2500 }) {
           style={{
             left: `${t.left}%`,
             top: `${t.top}%`,
-            width: t.size,
-            height: t.size,
+            width: t.width,
+            height: t.height,
             '--r': `${t.rotation}deg`,
             animationDelay: `-${t.delay}s`,
           }}

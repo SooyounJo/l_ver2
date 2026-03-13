@@ -150,6 +150,20 @@ export function useEndLogic({ onNext } = {}) {
       date: dateText,
       imageUrl: randomImageUrl || '',
     };
+    // Best-effort: 하루 아카이브용 Google Sheets 로그
+    try {
+      fetch('/api/log-interaction', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          text: quoteText,
+          imageUrl: randomImageUrl || '',
+        }),
+        keepalive: true,
+      }).catch(() => {});
+    } catch (_) {
+      // ignore logging errors
+    }
     try {
       if (navigator.sendBeacon) {
         const blob = new Blob([JSON.stringify(payload)], { type: 'application/json' });

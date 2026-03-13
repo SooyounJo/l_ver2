@@ -10,17 +10,20 @@
 .card {
   position: relative;
   width: min(60vw, 105vh);
-  aspect-ratio: 16 / 9;
-  border-radius: 22px;
-  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  border-radius: 0;
+  overflow: visible;
   background: #fff;
   box-shadow: 0 24px 90px rgba(0, 0, 0, 0.16);
   transform-origin: center center;
 }
 
 .imageWrap {
-  position: absolute;
-  inset: 0;
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
 }
 
 .image {
@@ -30,24 +33,32 @@
   display: block;
 }
 
-.textLayer {
-  position: absolute;
-  left: 6%;
-  right: 6%;
-  top: 70%;
-  transform: translateY(32px);
+/* 이미지 밖, 아래에 있는 화이트 블러 텍스트 영역 */
+.textBlurCard {
+  position: relative;
+  width: 100%;
+  margin-top: 0;
+  padding: clamp(12px, 1.8vw, 22px) 6%;
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
   opacity: 0;
+  transition: opacity 0.5s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.text {
+.textBlurText {
   font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Malgun Gothic', sans-serif;
-  font-size: clamp(10px, 1.3vw, 22px);
-  font-weight: 300;
-  line-height: 1.25;
-  color: rgba(15, 15, 15, 0.95);
-  text-shadow: 0 2px 16px rgba(255, 255, 255, 0.65);
+  font-size: clamp(13px, 1.6vw, 26px);
+  font-weight: 700;
+  line-height: 1.35;
+  color: #0a0a0a;
   word-break: keep-all;
   overflow-wrap: anywhere;
+  text-align: center;
 }
 
 /* Phase choreography */
@@ -66,16 +77,18 @@
 
 /* 2s hold: no change */
 
-/* 3s text rises */
-.root[data-phase='text'] .textLayer,
-.root[data-phase='hold2'] .textLayer,
-.root[data-phase='exit'] .textLayer {
-  transition: transform 3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.6s ease;
-  transform: translateY(0);
+/* text/hold2: 화이트 블러 카드 순간 등장 (대비감 있게) */
+.root[data-phase='text'] .textBlurCard,
+.root[data-phase='hold2'] .textBlurCard {
   opacity: 1;
 }
 
-/* Exit: shrink + move into a pixel position */
+/* exit: 블러 카드 먼저 페이드 아웃 후 카드 전체 작아지며 사라짐 */
+.root[data-phase='exit'] .textBlurCard {
+  opacity: 0;
+  transition: opacity 0.35s ease;
+}
+
 .root[data-phase='exit'] .card {
   transition: transform 2.6s cubic-bezier(0.4, 0, 0.2, 1), opacity 2.6s ease;
   transform: translate(calc(var(--target-x) - 50vw), calc(var(--target-y) - 50vh)) scale(0.08);

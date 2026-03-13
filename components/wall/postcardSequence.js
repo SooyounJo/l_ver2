@@ -108,14 +108,13 @@ export default function PostcardSequence({ card }) {
     >
       {active && (
         <div className={styles.card}>
-        <div className={styles.imageWrap} aria-hidden="true">
-          <img className={styles.image} src={imageUrl} alt="" />
+          <div className={styles.imageWrap} aria-hidden="true">
+            <img className={styles.image} src={imageUrl} alt="" />
+          </div>
+          <div className={styles.textBlurCard} aria-hidden={text ? 'false' : 'true'}>
+            <div className={styles.textBlurText}>{text}</div>
+          </div>
         </div>
-
-        <div className={styles.textLayer} aria-hidden={text ? 'false' : 'true'}>
-          <div className={styles.text}>{text}</div>
-        </div>
-      </div>
       )}
     </div>
   );
