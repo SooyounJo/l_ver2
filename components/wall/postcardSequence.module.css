@@ -7,16 +7,6 @@
   z-index: 2;
 }
 
-.stageDim {
-  position: absolute;
-  inset: 0;
-  background: transparent;
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
-  opacity: 0;
-  transition: opacity 0.4s ease;
-}
-
 .card {
   position: relative;
   width: fit-content;
@@ -46,24 +36,16 @@
   display: block;
 }
 
-/* 이미지 밖, 아래에 있는 화이트 블러 텍스트 영역 */
-.textBlurCard {
+.floatingText {
   position: absolute;
   left: 50%;
   top: calc(33.333vh + 10px);
   transform: translateX(-50%);
-  width: auto;
+  width: max-content;
+  max-width: min(86vw, 520px);
   padding: 0;
-  background: transparent;
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
-  box-shadow: none;
   opacity: 0;
   transition: opacity 0.5s ease;
-  display: block;
-}
-
-.textBlurText {
   font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Malgun Gothic', sans-serif;
   font-size: clamp(6.5px, 0.8vw, 13px);
   font-weight: 700;
@@ -73,7 +55,7 @@
   overflow-wrap: anywhere;
   text-align: center;
   text-shadow: none;
-  max-width: min(86vw, 520px);
+  white-space: pre-wrap;
 }
 
 /* Phase choreography */
@@ -90,28 +72,18 @@
   }
 }
 
-.root[data-phase='enter'] .stageDim,
-.root[data-phase='text'] .stageDim,
-.root[data-phase='hold2'] .stageDim {
-  opacity: 1;
-}
-
 /* 2s hold: no change */
 
 /* text/hold2: 화이트 블러 카드 순간 등장 (대비감 있게) */
-.root[data-phase='text'] .textBlurCard,
-.root[data-phase='hold2'] .textBlurCard {
+.root[data-phase='text'] .floatingText,
+.root[data-phase='hold2'] .floatingText {
   opacity: 1;
 }
 
 /* exit: 블러 카드 먼저 페이드 아웃 후 카드 전체 작아지며 사라짐 */
-.root[data-phase='exit'] .textBlurCard {
+.root[data-phase='exit'] .floatingText {
   opacity: 0;
   transition: opacity 0.35s ease;
-}
-
-.root[data-phase='exit'] .stageDim {
-  opacity: 0;
 }
 
 .root[data-phase='exit'] .card {
