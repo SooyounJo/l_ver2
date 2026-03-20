@@ -5,25 +5,22 @@ import ScatteredTiles from './ScatteredTiles';
 import ArchiveSpotlight from './ArchiveSpotlight';
 
 export default function WallScreen() {
-  const { cards, lastInputAt, pauseTilesMs, tilesBurst, burstRunId, archiveRunId, archiveActive, archiveTextOverride, triggerBurstLT, triggerBurstRB, triggerArchiveNow, triggerTestMobileInput } = useWallLogic();
+  const { cards, lastInputAt, pauseTilesMs, tilesBurst, burstRunId, archiveRunId, archiveActive, archiveTextOverride } = useWallLogic();
+
+  const clearWallSelection = () => {
+    try {
+      window.getSelection()?.removeAllRanges?.();
+    } catch (_) {}
+  };
 
   return (
-    <div className={styles.page}>
+    <div
+      className={styles.page}
+      tabIndex={-1}
+      onMouseDown={clearWallSelection}
+      onTouchStart={clearWallSelection}
+    >
       <ScatteredTiles lastInputAt={lastInputAt} pauseMs={pauseTilesMs} burst={tilesBurst} burstRunId={burstRunId} archiveRunId={archiveRunId} />
-      <div className={styles.debugPanel}>
-        <button className={styles.debugBtn} onClick={triggerBurstLT} type="button">
-          Spread LT
-        </button>
-        <button className={styles.debugBtn} onClick={triggerBurstRB} type="button">
-          Spread RB
-        </button>
-        <button className={styles.debugBtn} onClick={triggerArchiveNow} type="button">
-          Archive
-        </button>
-        <button className={styles.debugBtn} onClick={() => triggerTestMobileInput('행복한 하루')} type="button">
-          Test Input (Mobile)
-        </button>
-      </div>
       <ArchiveSpotlight cards={cards} runId={archiveRunId} active={archiveActive} textOverride={archiveTextOverride} />
       {!archiveActive &&
         cards.map((card) =>

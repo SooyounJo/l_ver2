@@ -21,7 +21,7 @@
 .imageWrap {
   position: relative;
   width: auto;
-  height: 33.333vh;
+  height: 40vh;
   max-width: 86vw;
   aspect-ratio: var(--img-aspect, 16 / 9);
   overflow: hidden;
@@ -39,7 +39,7 @@
 .floatingText {
   position: absolute;
   left: 50%;
-  top: calc(33.333vh + 10px);
+  top: calc(40vh + 10px);
   transform: translateX(-50%);
   width: max-content;
   max-width: min(86vw, 520px);
@@ -56,6 +56,10 @@
   text-align: center;
   text-shadow: none;
   white-space: pre-wrap;
+  user-select: none;
+  -webkit-user-select: none;
+  pointer-events: none;
+  caret-color: transparent;
 }
 
 /* Phase choreography */

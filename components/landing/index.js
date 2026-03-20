@@ -67,9 +67,6 @@ const cx = (...names) => names.filter(Boolean).map((n) => styles[n]).filter(Bool
             <>
               <span className={styles['landing-cta-line1']}>위로 스크롤 하여</span>
               <span className={styles['landing-cta-line2']}>체험을 시작하기</span>
-              <span className={styles['landing-cta-arrow']} aria-hidden="true">
-                ⌃
-              </span>
             </>
           ) : (
             <>

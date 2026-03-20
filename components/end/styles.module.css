@@ -56,6 +56,10 @@
   transform: translateX(-50%);
   display: flex;
   gap: 13px;
+  user-select: none;
+  -webkit-user-select: none;
+  cursor: default;
+  caret-color: transparent;
 }
 
 .end-dot {
@@ -64,11 +68,26 @@
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.35);
   opacity: 0.45;
+  user-select: none;
+  -webkit-user-select: none;
+  pointer-events: none;
 }
 
 .active {
   background: rgba(255, 255, 255, 0.95);
   opacity: 0.95;
+}
+
+.end-front-title,
+.end-front-author,
+.end-back-title,
+.end-back-author,
+.end-back-quote,
+.end-back-date,
+.end-send-text {
+  user-select: none;
+  -webkit-user-select: none;
+  cursor: default;
 }
 
 /* 플립 카드 컨테이너 */
@@ -265,19 +284,23 @@
   gap: 10px;
 }
 
+/* 저장 버튼 - 심플 글래스 모피즘 */
 .end-back-save {
   width: auto;
   height: 36px;
   padding: 0 16px;
   position: relative;
   right: -3px;
-  border: none;
+  border: 1px solid rgba(255, 255, 255, 0.36);
   border-radius: 16px;
-  background: linear-gradient(180deg, rgba(210, 210, 210, 0.78) 0%, rgba(160, 160, 160, 0.62) 100%);
-  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.22);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  color: rgba(0, 0, 0, 0.88);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.33) 0%, rgba(255, 255, 255, 0.16) 100%);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.42) inset,
+    0 10px 22px rgba(0, 0, 0, 0.28),
+    0 4px 10px rgba(0, 0, 0, 0.18);
+  backdrop-filter: blur(10px) saturate(1.05);
+  -webkit-backdrop-filter: blur(10px) saturate(1.05);
+  color: rgba(20, 20, 20, 0.86);
   font-size: 16px;
   font-weight: 400;
   line-height: 1;
@@ -288,6 +311,9 @@
 
 .end-back-save:active {
   transform: translateY(1px) scale(0.99);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.3) inset,
+    0 6px 16px rgba(0, 0, 0, 0.22);
 }
 
 .end-back-save[data-saving='true'] {
@@ -296,7 +322,7 @@
 }
 
 .end-back-save:focus-visible {
-  outline: 2px solid rgba(255, 255, 255, 0.9);
+  outline: 2px solid rgba(255, 255, 255, 0.85);
   outline-offset: 3px;
 }
 
@@ -305,7 +331,7 @@
   left: 23px;
   top: 501px;
   width: 193px;
-  font-size: 12px;
+  font-size: 15px;
   line-height: 1.25;
   color: #000;
   font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Malgun Gothic', sans-serif;
@@ -327,17 +353,6 @@
   animation: endHintTextPulse 1.7s ease-in-out infinite;
 }
 
-.end-send-arrow {
-  position: absolute;
-  left: 159px;
-  top: 762px;
-  width: 83px;
-  height: 174px;
-  display: block;
-  will-change: transform, opacity;
-  animation: endHintArrowPulse 1.7s ease-in-out infinite;
-}
-
 @keyframes endHintTextPulse {
   0% {
     opacity: 0.18;
@@ -350,21 +365,6 @@
   100% {
     opacity: 0.18;
     transform: translateX(-50%) translateY(6px);
-  }
-}
-
-@keyframes endHintArrowPulse {
-  0% {
-    opacity: 0.18;
-    transform: translateY(10px);
-  }
-  45% {
-    opacity: 0.9;
-    transform: translateY(0px);
-  }
-  100% {
-    opacity: 0.18;
-    transform: translateY(10px);
   }
 }
 

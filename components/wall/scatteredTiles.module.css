@@ -4,6 +4,9 @@
   pointer-events: none;
   z-index: 0;
   background: #f5f5f5;
+  user-select: none;
+  -webkit-user-select: none;
+  caret-color: transparent;
 }
 
 .tileSlot {

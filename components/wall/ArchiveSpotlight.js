@@ -1,15 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import styles from './archiveSpotlight.module.css';
 
-function seededShuffle(list) {
-  const arr = [...list];
-  for (let i = arr.length - 1; i > 0; i -= 1) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [arr[i], arr[j]] = [arr[j], arr[i]];
-  }
-  return arr;
-}
-
 export default function ArchiveSpotlight({ cards = [], runId = 0, active = false, textOverride = '' }) {
   const [items, setItems] = useState([]);
   const timersRef = useRef([]);
@@ -87,15 +78,49 @@ export default function ArchiveSpotlight({ cards = [], runId = 0, active = false
         return;
       }
 
-      // 입력이 있으면: 후보 중에서 5개를 골라 좌→우 순차 중앙 스포트라이트
-      const shuffled = seededShuffle(candidates);
-      const queueSeed = shuffled.slice(0, maxItems);
-      const queue = [...queueSeed];
-
-      while (queue.length < maxItems && candidates.length > 0) {
-        const pick = candidates[Math.floor(Math.random() * candidates.length)];
-        queue.push({ ...pick, id: `${pick.id}-dup-${queue.length}` });
+      // 입력이 있으면: 고유 imageUrl 기준으로 사용자 엽서를 담고, 5장 미만이면 사용자와 겹치지 않는 랜덤으로 채움 (같은 이미지 복제 금지)
+      const urlSeen = new Set();
+      const userUniqueInOrder = [];
+      for (const c of candidates) {
+        const u = (c.imageUrl || '').trim();
+        if (!u || urlSeen.has(u)) continue;
+        urlSeen.add(u);
+        userUniqueInOrder.push(c);
       }
+      const userTake = userUniqueInOrder.slice(-maxItems);
+
+      const usedUrls = new Set(userTake.map((c) => (c.imageUrl || '').trim()).filter(Boolean));
+      const needFill = Math.max(0, maxItems - userTake.length);
+      const fillers = [];
+      if (needFill > 0) {
+        try {
+          const r = await fetch(`/api/random-public-image?count=${needFill + 16}`);
+          const data = await r.json().catch(() => ({}));
+          const urls = Array.isArray(data?.urls) ? data.urls : [];
+          for (const raw of urls) {
+            const u = typeof raw === 'string' ? raw.trim() : '';
+            if (!u || usedUrls.has(u)) continue;
+            usedUrls.add(u);
+            fillers.push({
+              id: `${runId}-fill-${fillers.length}`,
+              imageUrl: u,
+              text: '',
+            });
+            if (fillers.length >= needFill) break;
+          }
+        } catch (_) {
+          // ignore
+        }
+      }
+
+      const queue = [
+        ...userTake.map((c, i) => ({
+          id: `${runId}-user-${c.sentAt ?? i}-${i}`,
+          imageUrl: (c.imageUrl || '').trim(),
+          text: typeof c.text === 'string' ? c.text : '',
+        })),
+        ...fillers,
+      ].slice(0, maxItems);
 
       queue.forEach((entry, i) => {
         if (!entry.imageUrl) return;

@@ -94,7 +94,13 @@ export default function EndScreen({ onNext } = {}) {
           transform: `translate(-50%, -50%) scale(${scale})`,
         }}
       >
-        <div className={styles['end-indicator']} aria-hidden="true">
+        <div
+          className={styles['end-indicator']}
+          aria-hidden="true"
+          onPointerDown={(e) => e.stopPropagation()}
+          onTouchStart={(e) => e.stopPropagation()}
+          onClick={(e) => e.stopPropagation()}
+        >
           <span className={styles['end-dot']} />
           <span className={styles['end-dot']} />
           <span className={cx('end-dot', 'active')} />
@@ -149,29 +155,10 @@ export default function EndScreen({ onNext } = {}) {
         </div>
 
         {flipped && (
-          <>
-            <div className={styles['end-send-text']}>
-              <div>위로 슬라이드 하여</div>
-              <div>미디어 월로 전송</div>
-            </div>
-            <svg
-              className={styles['end-send-arrow']}
-              viewBox="0 0 83 174"
-              fill="none"
-              aria-hidden="true"
-              focusable="false"
-            >
-              <rect x="6" y="6" width="71" height="162" rx="18" stroke="rgba(255, 255, 255, 0.28)" strokeWidth="2" />
-              <path d="M41.5 118V62" stroke="rgba(255, 255, 255, 0.55)" strokeWidth="3" strokeLinecap="round" />
-              <path
-                d="M30 73.5L41.5 62L53 73.5"
-                stroke="rgba(255, 255, 255, 0.55)"
-                strokeWidth="3"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </>
+          <div className={styles['end-send-text']}>
+            <div>위로 슬라이드 하여</div>
+            <div>엽서를 완성</div>
+          </div>
         )}
       </div>
     </div>

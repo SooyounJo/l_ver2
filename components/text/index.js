@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTextLogic } from './logic';
 import styles from './styles.module.css';
 
@@ -19,7 +19,7 @@ export default function TextScreen({ onNext } = {}) {
 
   const hasText = inputValue.trim().length > 0;
   const [introOn, setIntroOn] = useState(false);
-  const questionLines = useMemo(() => ['무라카미 하루키에게', '딱 한 문장만 보낼 수 있다면', '무엇을 말하고 싶으세요?'], []);
+  const questionLines = useMemo(() => ['하루키의 세계를 지나온 당신,', '지금 마음속에 떠오르는', '단 하나의 문장이 있나요?'], []);
   const questionText = useMemo(() => questionLines.join('\n'), [questionLines]);
   const [typedText, setTypedText] = useState('');
   const typingTimeoutRef = useRef(null);
@@ -56,10 +56,41 @@ export default function TextScreen({ onNext } = {}) {
     };
   }, [questionText]);
 
+  const focusInput = useCallback(() => {
+    const el = textareaRef.current;
+    if (!el) return;
+    el.focus();
+    // 입력 끝으로 커서 이동
+    const len = el.value?.length ?? 0;
+    try {
+      el.setSelectionRange(len, len);
+    } catch (_) {}
+  }, [textareaRef]);
+
+  /** 상단 점 영역 탭 시 textarea 포커스/캐럿이 점 근처로 잡히는 것 방지 */
+  const absorbIndicatorPointer = useCallback(
+    (e) => {
+      e.stopPropagation();
+      textareaRef.current?.blur();
+    },
+    [textareaRef]
+  );
+
   return (
-    <div className={styles['text-figma-page']} onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd} onWheel={handleWheel}>
+    <div
+      className={styles['text-figma-page']}
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
+      onWheel={handleWheel}
+      onClick={focusInput}
+    >
       <div className={cx('text-figma-card', introOn && 'text-figma-intro', isExiting && 'text-figma-card-exit')}>
-        <div className={styles['text-figma-indicator']}>
+        <div
+          className={styles['text-figma-indicator']}
+          onPointerDown={absorbIndicatorPointer}
+          onTouchStart={absorbIndicatorPointer}
+          onClick={(e) => e.stopPropagation()}
+        >
           <span className={styles['text-figma-dot']} />
           <span className={cx('text-figma-dot', 'active')} aria-current="true" />
           <span className={styles['text-figma-dot']} />
@@ -106,7 +137,7 @@ export default function TextScreen({ onNext } = {}) {
           <p className={cx('text-figma-below-card-hint', 'text-figma-slide-hint')}>
             <span>위로 슬라이드 하여</span>
             <br />
-            <span>미디어 월로 전송</span>
+            <span>엽서를 완성</span>
           </p>
         )}
       </div>

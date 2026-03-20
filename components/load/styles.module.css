@@ -10,7 +10,7 @@
   touch-action: none;
 }
 
-/* 배경 - landing 과 동일 (pipa.jpg) */
+/* 배경 - landing 과 동일 (pipa.jpg) — 도형/질감을 카드보다 뒤로 눌러 보이게 */
 .load-figma-page::before {
   content: '';
   position: absolute;
@@ -18,15 +18,16 @@
   z-index: 0;
   background: url('/pipa.jpg') center center / auto 130% no-repeat;
   background-attachment: scroll;
+  filter: brightness(0.72) saturate(0.95);
 }
 
-/* 블랙 70% 오버레이(살짝 눌림) */
+/* 블랙 오버레이 — 배경(엽서 뒤 비치는 영역) 추가로 눌림 */
 .load-figma-page::after {
   content: '';
   position: absolute;
   inset: 0;
   z-index: 0;
-  background: rgba(0, 0, 0, 0.7);
+  background: rgba(0, 0, 0, 0.66);
 }
 
 /* 애니메이션 레이어(텍스트 뒤) */
@@ -118,7 +119,7 @@
 .sway {}
 .active {}
 
-/* 인디케이터 */
+/* 인디케이터 — 바쁜 엽서 배경 위에서 도트가 읽히도록 뒤에 그림자/소프트 블롭 */
 .load-indicator {
   position: absolute;
   left: 50%;
@@ -127,191 +128,29 @@
   display: flex;
   gap: 13px;
   z-index: 3;
+  isolation: isolate;
+  user-select: none;
+  -webkit-user-select: none;
+  cursor: default;
+  caret-color: transparent;
 }
 
-.load-dot {
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.35);
-  opacity: 0.6;
-  animation: loadDotBounce 0.9s cubic-bezier(0.33, 1, 0.68, 1) infinite;
-}
-
-.load-dot:nth-child(1) { animation-delay: 0s; }
-.load-dot:nth-child(2) { animation-delay: 0.12s; }
-.load-dot:nth-child(3) { animation-delay: 0.24s; }
-
-@keyframes loadDotBounce {
-  0%,
-  100% {
-    transform: translateY(0) scale(0.92);
-    opacity: 0.45;
-    background: rgba(255, 255, 255, 0.35);
-  }
-  35% {
-    transform: translateY(-10px) scale(1);
-    opacity: 0.95;
-    background: rgba(255, 255, 255, 0.9);
-  }
-  55% {
-    transform: translateY(0) scale(0.98);
-    opacity: 0.7;
-    background: rgba(255, 255, 255, 0.55);
-  }
-}
-
-/* 텍스트(최상단) */
-.load-figma-title {
-  position: absolute;
-  left: 31px;
-  top: 152px;
-  z-index: 3;
-  font-size: 24px;
-  font-weight: 500;
-  line-height: 1.25;
-  color: #ffffff;
-  text-shadow: 0 4px 17.3px rgba(0, 0, 0, 0.45);
-}
-
-@media (max-width: 420px) {
-  .load-card {
-    transform-origin: center;
-    zoom: 0.95;
-  }
-}
-
-/* 로딩 페이지 - Figma 10-772 기준 */
-
-.load-figma-page {
-  position: relative;
-  width: 100%;
-  height: 100dvh;
-  height: 100vh;
-  overflow: hidden;
-  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Malgun Gothic', sans-serif;
-  touch-action: none;
-}
-
-/* 배경 - landing 과 동일 (pipa.jpg) */
-.load-figma-page::before {
+.load-indicator::before {
   content: '';
   position: absolute;
-  inset: 0;
-  z-index: 0;
-  background: url('/pipa.jpg') center center / auto 130% no-repeat;
-  background-attachment: scroll;
-}
-
-/* 블랙 70% 오버레이(살짝 눌림) */
-.load-figma-page::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  background: rgba(0, 0, 0, 0.7);
-}
-
-/* 애니메이션 레이어(텍스트 뒤) */
-.load-anim-layer {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 118px;
+  height: 42px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.42);
+  filter: blur(14px);
+  opacity: 0.9;
+  z-index: -1;
   pointer-events: none;
 }
 
-.load-anim-track {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 200%;
-  animation: loadDriftUp 10s linear infinite;
-  will-change: transform;
-}
-
-@keyframes loadDriftUp {
-  from {
-    transform: translateY(0);
-  }
-  to {
-    transform: translateY(-50%);
-  }
-}
-
-/* 카드 공통 */
-.load-card {
-  position: absolute;
-  width: 202.855px;
-  height: 349.331px;
-  border-radius: 25px;
-  box-shadow: 0 11px 28.8px rgba(0, 0, 0, 0.38);
-  overflow: hidden;
-  background: rgba(255, 255, 255, 0.08);
-  will-change: transform;
-}
-
-.load-card img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
-
-/* Figma 위치/회전 근사 */
-.a {
-  left: -109px;
-  top: 237px;
-  transform: rotate(15deg);
-}
-
-.b {
-  left: 151px;
-  top: 571px;
-  transform: rotate(-30deg);
-}
-
-.c {
-  left: 222px;
-  top: -39px;
-  transform: rotate(-30deg);
-}
-
-/* 좌우 흔들림은 마지막 1장만 */
-.c.sway {
-  animation: loadCardSwayC 3.2s ease-in-out infinite;
-}
-
-@keyframes loadCardSwayC {
-  0%,
-  100% {
-    transform: translateX(0) rotate(-30deg);
-  }
-  25% {
-    transform: translateX(-9px) rotate(-30.6deg);
-  }
-  50% {
-    transform: translateX(0) rotate(-31.2deg);
-  }
-  75% {
-    transform: translateX(8px) rotate(-30.4deg);
-  }
-}
-
-.sway {}
-.active {}
-
-/* 인디케이터 */
-.load-indicator {
-  position: absolute;
-  left: 50%;
-  top: 430px;
-  transform: translateX(-50%);
-  display: flex;
-  gap: 13px;
-  z-index: 3;
-}
-
 .load-dot {
   width: 16px;
   height: 16px;
@@ -319,6 +158,12 @@
   background: rgba(255, 255, 255, 0.35);
   opacity: 0.6;
   animation: loadDotBounce 0.9s cubic-bezier(0.33, 1, 0.68, 1) infinite;
+  box-shadow:
+    0 2px 6px rgba(0, 0, 0, 0.55),
+    0 4px 14px rgba(0, 0, 0, 0.35);
+  user-select: none;
+  -webkit-user-select: none;
+  pointer-events: none;
 }
 
 .load-dot:nth-child(1) { animation-delay: 0s; }
@@ -344,17 +189,25 @@
   }
 }
 
-/* 텍스트(최상단) */
+/* 중앙 로딩 문구 — 배경 박스/그라데이션 없이 텍스트 드롭쉐도우만 */
 .load-figma-title {
   position: absolute;
   left: 31px;
   top: 152px;
   z-index: 3;
+  display: inline-flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 0;
   font-size: 24px;
-  font-weight: 500;
+  font-weight: 600;
   line-height: 1.25;
-  color: #ffffff;
-  text-shadow: 0 4px 17.3px rgba(0, 0, 0, 0.45);
+  color: rgba(255, 255, 255, 1);
+  opacity: 1;
+  text-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.72),
+    0 2px 10px rgba(0, 0, 0, 0.5),
+    0 4px 22px rgba(0, 0, 0, 0.38);
 }
 
 @media (max-width: 420px) {
@@ -363,4 +216,3 @@
     zoom: 0.95;
   }
 }
-

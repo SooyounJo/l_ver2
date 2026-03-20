@@ -2,6 +2,14 @@ import { useEffect, useRef, useState } from 'react';
 import { connectSocket } from '@/lib/socket/client';
 import { EVENTS } from '@/lib/socket/events';
 
+function attachReloadListener(socket) {
+  if (!socket || socket.__platforml_reload_listener) return;
+  socket.__platforml_reload_listener = true;
+  socket.on(EVENTS.RELOAD_ALL, () => {
+    if (typeof window !== 'undefined') window.location.reload();
+  });
+}
+
 const PAUSE_TILES_MS = 2500;
 const TILES_BURST_INTERVAL_MS = 5 * 60 * 1000;
 const ARCHIVE_INTERVAL_MS = 2 * 60 * 1000;
@@ -33,6 +41,7 @@ export function useWallLogic() {
       if (cancelled) return;
 
       socket = await connectSocket();
+      attachReloadListener(socket);
 
       socket.on('connect', () => setStatus('connected'));
       socket.on('disconnect', () => setStatus('disconnected'));

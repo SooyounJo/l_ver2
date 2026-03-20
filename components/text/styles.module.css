@@ -31,7 +31,9 @@
   position: fixed;
   inset: 0;
   z-index: -1;
-  background: linear-gradient(180deg, rgba(36, 36, 36, 0.6) 0%, rgba(130, 125, 112, 0.35) 14.9%, rgba(235, 235, 220, 0.18) 100%);
+  background:
+    linear-gradient(0deg, rgba(44, 58, 108, 0.24) 0%, rgba(44, 58, 108, 0.1) 22%, rgba(44, 58, 108, 0) 52%),
+    linear-gradient(180deg, rgba(36, 36, 36, 0.6) 0%, rgba(130, 125, 112, 0.35) 14.9%, rgba(235, 235, 220, 0.18) 100%);
   box-shadow: inset 0 0 0 100vmax rgba(0, 0, 0, 0.45);
   pointer-events: none;
 }
@@ -45,7 +47,11 @@
   /* landing 페이지 인디케이터와 같은 기준 Y 위치 */
   padding-top: calc(max(clamp(3.5rem, 15vw, 4.25rem), env(safe-area-inset-top, 0)) + clamp(0.35rem, 2vw, 0.5rem));
   padding-bottom: clamp(0.6rem, 2.5vw, 0.9rem);
-  pointer-events: none;
+  pointer-events: auto;
+  user-select: none;
+  -webkit-user-select: none;
+  cursor: default;
+  caret-color: transparent;
 }
 
 .text-figma-dot {
@@ -55,6 +61,9 @@
   background: rgba(255, 255, 255, 0.32);
   box-shadow: 0 0 10px rgba(255, 255, 255, 0.22);
   filter: blur(0.15px);
+  user-select: none;
+  -webkit-user-select: none;
+  pointer-events: none;
 }
 
 .active {
@@ -77,6 +86,9 @@
   animation: cardSlideUp 0.5s cubic-bezier(0.33, 1, 0.68, 1) forwards;
   overflow: visible;
   box-sizing: border-box;
+  user-select: none;
+  -webkit-user-select: none;
+  cursor: default;
 }
 
 @keyframes textIntroFadeUp {
@@ -152,10 +164,16 @@
   line-height: 1.3;
   margin: clamp(3.1rem, 14vw, 5.9rem) 0 clamp(1.8rem, 7vw, 3.1rem);
   text-align: left;
+  cursor: default;
+  user-select: none;
+  caret-color: transparent;
 }
 
 .text-figma-question p {
   margin: 0 0 0.15em;
+  cursor: default;
+  user-select: none;
+  caret-color: transparent;
 }
 
 /* 따옴표 + 중앙 텍스트 - 붙어있는 레이아웃 */
@@ -197,11 +215,13 @@
   flex-direction: column;
   align-items: center;
   gap: 0.75rem;
+  position: relative;
 }
 
 .text-figma-quote-input {
   font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Malgun Gothic', sans-serif;
-  font-size: clamp(0.82rem, 3.5vw, 0.95rem);
+  /* 최소 15px (0.9375rem @ 16px root) — 플레이스홀더/입력 동일 */
+  font-size: clamp(0.9375rem, 3.5vw, 1rem);
   color: rgba(0, 0, 0, 0.3);
   line-height: 1.5;
   text-align: center;
@@ -214,12 +234,33 @@
   resize: none;
   overflow: hidden;
   outline: none;
-  caret-color: rgba(0, 0, 0, 0.4);
+  /* 터치/포커스 시 네이티브 깜빡임 커서 표시 */
+  caret-color: rgba(0, 0, 0, 0.55);
   word-break: keep-all;
+  animation: quoteInputBreath 2.2s ease-in-out infinite;
+  user-select: text;
+  -webkit-user-select: text;
+  cursor: text;
 }
 
 .text-figma-quote-input::placeholder {
   color: rgba(0, 0, 0, 0.25);
+}
+
+.text-figma-quote-input:focus {
+  animation: none;
+}
+
+@keyframes quoteInputBreath {
+  0% {
+    filter: drop-shadow(0 0 0 rgba(255, 255, 255, 0));
+  }
+  50% {
+    filter: drop-shadow(0 0 7px rgba(255, 255, 255, 0.35));
+  }
+  100% {
+    filter: drop-shadow(0 0 0 rgba(255, 255, 255, 0));
+  }
 }
 
 @keyframes typingHintFade {
@@ -242,7 +283,7 @@
   transform: translateX(-50%);
   margin: 0;
   font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Malgun Gothic', sans-serif;
-  font-size: clamp(0.82rem, 3.5vw, 0.95rem);
+  font-size: clamp(1rem, 4.4vw, 1.25rem);
   line-height: 1.2;
   letter-spacing: -0.01em;
   color: rgba(255, 255, 255, 0.98);
