@@ -65,6 +65,8 @@ export default async function handler(req, res) {
   const sheets = await getSheetsClient();
   if (!sheets) {
     // Sheets 연동이 설정되지 않은 경우에도 앱은 정상 동작해야 하므로 200 반환
+    // eslint-disable-next-line no-console
+    console.warn('[log-interaction] disabled (missing GOOGLE_SHEETS_* env or auth failed)');
     return res.status(200).json({ ok: false, disabled: true });
   }
 

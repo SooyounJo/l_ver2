@@ -6,8 +6,21 @@
   background: #f5f5f5;
 }
 
-.tile {
+.tileSlot {
   position: absolute;
+  transition:
+    left 2.2s cubic-bezier(0.16, 1, 0.3, 1),
+    top 2.2s cubic-bezier(0.16, 1, 0.3, 1),
+    width 1.5s ease,
+    height 1.5s ease,
+    transform 0.9s ease,
+    opacity 0.9s ease;
+  will-change: left, top, transform;
+}
+
+.tile {
+  width: 100%;
+  height: 100%;
   object-fit: cover;
   border-radius: 2px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
@@ -18,6 +31,37 @@
 
 .layer.paused .tile {
   animation-play-state: paused;
+}
+
+.gatherMode .tile {
+  animation-play-state: paused;
+}
+
+.gridMode .tileSlot {
+  transition:
+    left 2.2s cubic-bezier(0.22, 1, 0.36, 1),
+    top 2.2s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.9s ease,
+    opacity 0.9s ease;
+}
+
+.gridMode .tile {
+  animation-play-state: paused;
+  opacity: 0.14;
+}
+
+.gridReveal .tileSlot {
+  animation: archivePop 900ms ease both;
+  animation-delay: var(--pop-delay, 0s);
+}
+
+.gridReveal .tile {
+  opacity: 0.06;
+}
+
+@keyframes archivePop {
+  0% { transform: translateY(18px) scale(0.9); opacity: 0.5; }
+  100% { transform: translateY(0) scale(1); opacity: 1; }
 }
 
 /* 시원하게 뿌려지듯이 → 스르르 멈췄다가 (넓은 이동 + 멈춤 구간) */

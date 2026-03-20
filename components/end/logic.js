@@ -140,23 +140,35 @@ export function useEndLogic({ onNext } = {}) {
   }, []);
 
   useEffect(() => {
-    const t = setTimeout(() => setFlipped(true), 2000);
+    const t = setTimeout(() => setFlipped(true), 900);
     return () => clearTimeout(t);
   }, []);
 
   const sendToWall = useCallback(() => {
+    let userTextForWall = '';
+    try {
+      userTextForWall = (localStorage.getItem('platforml:userText') || '').trim();
+    } catch (_) {}
+    if (!userTextForWall) userTextForWall = quoteText;
+
     const payload = {
-      text: quoteText,
+      text: userTextForWall,
       date: dateText,
       imageUrl: randomImageUrl || '',
     };
-    // Best-effort: 하루 아카이브용 Google Sheets 로그
+    // 시트에는 사용자가 적은 원문 저장 (localStorage에서 직전에 읽어서 전송)
+    let userTextForSheet = '';
+    try {
+      userTextForSheet = (localStorage.getItem('platforml:userText') || '').trim();
+    } catch (_) {}
+    if (!userTextForSheet) userTextForSheet = quoteText;
+    const textToLog = userTextForSheet || quoteText;
     try {
       fetch('/api/log-interaction', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          text: quoteText,
+          text: textToLog,
           imageUrl: randomImageUrl || '',
         }),
         keepalive: true,
@@ -193,7 +205,7 @@ export function useEndLogic({ onNext } = {}) {
     setIsFadingOut(true);
     setTimeout(() => {
       goNextPage();
-    }, 700);
+    }, 320);
   }, [flipped, isFadingOut, sendToWall, goNextPage]);
 
   const onTouchStart = useCallback((e) => {

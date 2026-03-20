@@ -107,7 +107,7 @@ export function useLandingLogic({ onNext } = {}) {
       if (!touchActive.current || !e.touches.length) return;
       const currentY = e.touches[0].clientY;
       if (startY.current - currentY > SWIPE_THRESHOLD) {
-        e.preventDefault();
+        if (e.cancelable) e.preventDefault();
         touchActive.current = false;
         handleAction();
       }
@@ -117,7 +117,7 @@ export function useLandingLogic({ onNext } = {}) {
     };
     const onWheel = (e) => {
       if (e.deltaY < -15) {
-        e.preventDefault();
+        if (e.cancelable) e.preventDefault();
         handleAction();
       }
     };

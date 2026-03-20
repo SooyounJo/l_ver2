@@ -7,13 +7,25 @@ function pickRandom(arr) {
 }
 
 function pickRandomMultiple(arr, count) {
-  if (count >= arr.length) return [...arr];
-  const out = [];
-  const pool = [...arr];
-  for (let i = 0; i < count && pool.length > 0; i++) {
-    const idx = Math.floor(Math.random() * pool.length);
-    out.push(pool[idx]);
-    pool.splice(idx, 1);
+  if (arr.length === 0) return [];
+  if (count <= arr.length) {
+    const out = [];
+    const pool = [...arr];
+    for (let i = 0; i < count && pool.length > 0; i++) {
+      const idx = Math.floor(Math.random() * pool.length);
+      out.push(pool[idx]);
+      pool.splice(idx, 1);
+    }
+    return out;
+  }
+  const shuffled = [...arr];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  const out = [...shuffled];
+  for (let i = arr.length; i < count; i++) {
+    out.push(arr[Math.floor(Math.random() * arr.length)]);
   }
   return out;
 }

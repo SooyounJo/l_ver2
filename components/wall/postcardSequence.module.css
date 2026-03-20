@@ -7,65 +7,80 @@
   z-index: 2;
 }
 
+.stageDim {
+  position: absolute;
+  inset: 0;
+  background: transparent;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
 .card {
   position: relative;
-  width: min(60vw, 105vh);
-  display: flex;
-  flex-direction: column;
+  width: fit-content;
+  display: block;
   border-radius: 0;
   overflow: visible;
-  background: #fff;
-  box-shadow: 0 24px 90px rgba(0, 0, 0, 0.16);
+  background: transparent;
   transform-origin: center center;
+  box-shadow: none;
 }
 
 .imageWrap {
   position: relative;
-  width: 100%;
-  aspect-ratio: 16 / 9;
+  width: auto;
+  height: 33.333vh;
+  max-width: 86vw;
+  aspect-ratio: var(--img-aspect, 16 / 9);
   overflow: hidden;
+  background: transparent;
+  box-shadow: none;
 }
 
 .image {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
   display: block;
 }
 
 /* 이미지 밖, 아래에 있는 화이트 블러 텍스트 영역 */
 .textBlurCard {
-  position: relative;
-  width: 100%;
-  margin-top: 0;
-  padding: clamp(12px, 1.8vw, 22px) 6%;
-  background: rgba(255, 255, 255, 0.88);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+  position: absolute;
+  left: 50%;
+  top: calc(33.333vh + 10px);
+  transform: translateX(-50%);
+  width: auto;
+  padding: 0;
+  background: transparent;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  box-shadow: none;
   opacity: 0;
   transition: opacity 0.5s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: block;
 }
 
 .textBlurText {
   font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Malgun Gothic', sans-serif;
-  font-size: clamp(13px, 1.6vw, 26px);
+  font-size: clamp(6.5px, 0.8vw, 13px);
   font-weight: 700;
-  line-height: 1.35;
-  color: #0a0a0a;
+  line-height: 1.2;
+  color: #f2f2f2;
   word-break: keep-all;
   overflow-wrap: anywhere;
   text-align: center;
+  text-shadow: none;
+  max-width: min(86vw, 520px);
 }
 
 /* Phase choreography */
 .root[data-phase='enter'] .card {
   opacity: 0;
   transform: translateY(55vh) scale(1);
-  animation: enterUp 2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: enterUp 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 @keyframes enterUp {
@@ -73,6 +88,12 @@
     opacity: 1;
     transform: translateY(0) scale(1);
   }
+}
+
+.root[data-phase='enter'] .stageDim,
+.root[data-phase='text'] .stageDim,
+.root[data-phase='hold2'] .stageDim {
+  opacity: 1;
 }
 
 /* 2s hold: no change */
@@ -89,8 +110,12 @@
   transition: opacity 0.35s ease;
 }
 
+.root[data-phase='exit'] .stageDim {
+  opacity: 0;
+}
+
 .root[data-phase='exit'] .card {
-  transition: transform 2.6s cubic-bezier(0.4, 0, 0.2, 1), opacity 2.6s ease;
+  transition: transform 1.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 1.5s ease;
   transform: translate(calc(var(--target-x) - 50vw), calc(var(--target-y) - 50vh)) scale(0.08);
   opacity: 0.95;
 }
