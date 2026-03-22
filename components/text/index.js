@@ -110,8 +110,7 @@ export default function TextScreen({ onNext } = {}) {
           <div className={styles['text-figma-quote-wrap']}>
             <textarea
               ref={textareaRef}
-              className={styles['text-figma-quote-input']}
-              placeholder="여기에 한 문장을 입력하세요"
+              className={cx('text-figma-quote-input', !hasText && 'text-figma-quote-input--empty')}
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               onInput={syncTextareaHeight}
@@ -123,6 +122,12 @@ export default function TextScreen({ onNext } = {}) {
               maxLength={120}
               aria-label="무라카미 하루키에게 보낼 한 문장"
             />
+            {!hasText && (
+              <div className={styles['text-figma-quote-prompt']} aria-hidden="true">
+                <p className={styles['text-figma-quote-hint']}>여기에 한 문장을 입력하세요</p>
+                <span className={styles['text-figma-quote-line']} aria-hidden="true" />
+              </div>
+            )}
           </div>
           <span className={styles['text-figma-quote-close']} aria-hidden="true">
             ”

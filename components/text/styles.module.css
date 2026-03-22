@@ -182,8 +182,12 @@
   align-items: flex-start;
   justify-content: center;
   gap: 0.4rem;
-  margin: clamp(0.35rem, 1.6vh, 0.65rem) auto clamp(2rem, 8vw, 3.5rem);
+  /* 질문과의 간격을 두고 블록 전체를 아래로 */
+  margin: clamp(1rem, 2.8vh, 1.65rem) auto clamp(2rem, 8vw, 3.5rem);
   max-width: min(95%, 18rem);
+  /* textarea 첫 줄 패딩과 동기화 — 따옴표를 첫 줄 높이에 맞춤 */
+  --quote-line-pad-y: clamp(0.85rem, 2.8vw, 1.15rem);
+  --quote-line-pad-x: 0.5rem;
 }
 
 .text-figma-quote-open,
@@ -195,7 +199,10 @@
   line-height: 1;
   flex-shrink: 0;
   letter-spacing: -0.06em;
-  transform: translateY(0.32em);
+  /* 첫 줄 텍스트(커서) 높이에 맞춤 */
+  align-self: flex-start;
+  margin-top: calc(var(--quote-line-pad-y) + 0.22rem);
+  transform: translateY(-0.06em);
   text-shadow: 0 1px 0 rgba(255, 255, 255, 0.22);
 }
 
@@ -207,15 +214,61 @@
   margin-left: 0.05rem;
 }
 
-/* 중앙 입력 영역 */
+/* 모바일에서 따옴표를 조금 더 작게 */
+@media (max-width: 480px) {
+  .text-figma-quote-open,
+  .text-figma-quote-close {
+    font-size: clamp(1.4rem, 9vw, 2.4rem);
+    margin-top: calc(var(--quote-line-pad-y) + 0.2rem);
+    transform: translateY(-0.08em);
+  }
+}
+
+/* 중앙 입력 영역 (--quote-line-pad-* 는 .text-figma-quote-block 에서 상속) */
 .text-figma-quote-wrap {
   flex: 1;
   min-width: 0;
+  display: block;
+  position: relative;
+}
+
+/* 안내 문구 + 밑줄 — textarea 첫 줄과 동일 좌표에 겹침 (빈 입력일 때만) */
+.text-figma-quote-prompt {
+  position: absolute;
+  top: var(--quote-line-pad-y);
+  left: 0;
+  right: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.75rem;
-  position: relative;
+  gap: 0.45rem;
+  pointer-events: none;
+  user-select: none;
+  z-index: 1;
+}
+
+.text-figma-quote-hint {
+  margin: 0;
+  padding: 0 0.25rem;
+  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Malgun Gothic', sans-serif;
+  font-size: clamp(0.875rem, 3.2vw, 0.9375rem);
+  font-weight: 400;
+  line-height: 1.35;
+  text-align: center;
+  color: rgba(0, 0, 0, 0.22);
+  word-break: keep-all;
+}
+
+/* 연하고 가로로 긴 밑줄 */
+.text-figma-quote-line {
+  display: block;
+  width: calc(100% + 0.85rem);
+  max-width: none;
+  margin-left: -0.425rem;
+  margin-right: -0.425rem;
+  height: 1px;
+  background: rgba(0, 0, 0, 0.1);
+  box-shadow: 0 0 0 0.5px rgba(255, 255, 255, 0.35);
 }
 
 .text-figma-quote-input {
@@ -227,8 +280,11 @@
   text-align: center;
   width: 100%;
   min-height: 4.5em;
-  /* placeholder/입력 시작 위치를 아래로 */
-  padding: 1.15rem 0.5rem 0.35rem;
+  /* 안내 레이어와 동일 — 첫 줄 = 커서 위치 */
+  padding: var(--quote-line-pad-y) var(--quote-line-pad-x) 0.35rem;
+  box-sizing: border-box;
+  position: relative;
+  z-index: 2;
   border: none;
   background: transparent;
   resize: none;
@@ -241,6 +297,18 @@
   user-select: text;
   -webkit-user-select: text;
   cursor: text;
+}
+
+/* 빈 상태: 겹치는 안내 문구가 보이도록 글자는 투명(커서는 유지) */
+.text-figma-quote-input--empty {
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  text-shadow: none;
+  animation: quoteInputBreath 2.2s ease-in-out infinite;
+}
+
+.text-figma-quote-input--empty:focus {
+  animation: none;
 }
 
 .text-figma-quote-input::placeholder {

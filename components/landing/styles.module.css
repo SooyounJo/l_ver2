@@ -1,12 +1,11 @@
 /* 랜딩 페이지 - Figma 16:417 스펙 반영, Pretendard, 리사이즈 대응 */
 
-/* Figma: 402×876 기준 - pipa 이미지 배경, 화면 꽉 차게 */
+/* 모바일 첫 화면 — 세로 일러스트 비율 유지하며 전체가 보이도록 (contain) */
 .landing-page {
   font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Malgun Gothic', sans-serif;
   min-height: 100dvh;
   min-height: 100vh;
-  background: url('/pipa.jpg') center center / auto 130% no-repeat;
-  background-attachment: scroll;
+  background-color: #ffffff;
   display: flex;
   flex-direction: column;
   padding: 0;
@@ -17,6 +16,22 @@
   position: relative;
   --landing-blur: 0px;
   --landing-overlay-opacity: 0;
+  --landing-bg-opacity: 1;
+}
+
+/* 포스터 배경은 가장 아래 레이어에서만 보여주고, 전환 시 서서히 사라지도록 */
+.landing-page::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  /* 아래는 살짝 더 흰 그라데이션, 포스터는 약간 아래로 내려서 두 번째 예시처럼 */
+  background:
+    linear-gradient(0deg, rgba(255, 255, 255, 0.96) 0%, rgba(255, 255, 255, 0) 40%),
+    #ffffff url('/ui/Jandi_20260311_172605.png') center calc(70px + env(safe-area-inset-top, 0)) / contain no-repeat;
+  opacity: var(--landing-bg-opacity);
+  transition: opacity 0.55s ease-in-out;
 }
 
 /* 스크롤로 카드 올릴 때 전체 블러 오버레이 */
@@ -55,8 +70,8 @@
   user-select: none;
   -webkit-user-select: none;
   pointer-events: none;
-  background: rgba(255, 255, 255, 0.62);
-  box-shadow: 0 0 12px rgba(255, 255, 255, 0.38);
+  background: rgba(210, 210, 210, 0.7);
+  box-shadow: 0 0 10px rgba(190, 190, 190, 0.5);
   filter: blur(0.15px);
   transition: background 0.2s, box-shadow 0.2s, opacity 0.2s;
   opacity: 0.85;
@@ -64,8 +79,8 @@
 }
 
 .active {
-  background: rgba(255, 255, 255, 0.98);
-  box-shadow: 0 0 18px rgba(255, 255, 255, 0.75);
+  background: rgba(235, 235, 235, 0.98);
+  box-shadow: 0 0 16px rgba(210, 210, 210, 0.9);
   filter: blur(0px);
   opacity: 1;
   animation: landingDotGlowActive 3.2s ease-in-out infinite;
@@ -233,7 +248,7 @@
 .landing-cta-line1,
 .landing-cta-line2,
 .landing-cta-arrow {
-  color: #ffffff;
+  color: #666666;
 }
 
 .landing-cta-wrap:not(.expanded) .landing-cta-line1,
@@ -242,9 +257,9 @@
   color: transparent;
   background-image: linear-gradient(
     105deg,
-    rgba(255, 255, 255, 0.5) 35%,
-    rgba(255, 255, 255, 0.98) 50%,
-    rgba(255, 255, 255, 0.5) 65%
+    rgba(80, 80, 80, 0.85) 26%,
+    rgba(30, 30, 30, 1) 50%,
+    rgba(80, 80, 80, 0.85) 74%
   );
   background-size: 220% 100%;
   background-position: 130% 50%;
@@ -333,8 +348,4 @@
     box-shadow: 0 0 10px rgba(255, 255, 255, 0.38);
   }
 }
-
-/* 상태 클래스 export 보장 */
-.expanded {}
-.slide-up {}
 

@@ -135,6 +135,8 @@
 .back {}
 .end-face.back {
   transform: rotateY(180deg);
+  /* 하단 행: 좌측 사용자 문장 / 우측 날짜+저장 — 상단 기준 동일 */
+  --end-back-footer-top: 484px;
 }
 
 /* 공통 배경(유리 느낌) */
@@ -277,7 +279,7 @@
 .end-back-meta {
   position: absolute;
   right: 23px;
-  top: 484px;
+  top: var(--end-back-footer-top);
   display: flex;
   flex-direction: column;
   align-items: flex-end;
@@ -329,7 +331,7 @@
 .end-back-quote {
   position: absolute;
   left: 23px;
-  top: 501px;
+  top: var(--end-back-footer-top);
   width: 193px;
   font-size: 15px;
   line-height: 1.25;

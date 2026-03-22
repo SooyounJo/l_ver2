@@ -17,6 +17,7 @@ export function useLandingLogic({ onNext } = {}) {
   const [phase, setPhase] = useState(0);
   const [blurPx, setBlurPx] = useState(0);
   const [overlayOpacity, setOverlayOpacity] = useState(0);
+  const [bgOpacity, setBgOpacity] = useState(1);
 
   const goNext = useCallback(() => {
     if (typeof onNext === 'function') return onNext();
@@ -27,7 +28,8 @@ export function useLandingLogic({ onNext } = {}) {
     if (phase !== 0 || isTransitioning.current) return;
     isTransitioning.current = true;
 
-    // 카드가 올라오는 동안 전체 블러 → 도착 후 선명해짐
+    // 카드가 올라오는 동안 전체 블러 + 배경 이미지 서서히 사라짐
+    setBgOpacity(0);
     setBlurPx(12);
     setOverlayOpacity(1);
     setPhase(1);
@@ -144,6 +146,7 @@ export function useLandingLogic({ onNext } = {}) {
     phase,
     blurPx,
     overlayOpacity,
+    bgOpacity,
     handleTouchStart,
     handleTouchEnd,
     handleMouseDown,

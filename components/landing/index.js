@@ -8,6 +8,7 @@ const cx = (...names) => names.filter(Boolean).map((n) => styles[n]).filter(Bool
     phase,
     blurPx,
     overlayOpacity,
+    bgOpacity,
     handleTouchStart,
     handleTouchEnd,
     handleMouseDown,
@@ -22,6 +23,7 @@ const cx = (...names) => names.filter(Boolean).map((n) => styles[n]).filter(Bool
       style={{
         '--landing-blur': `${blurPx}px`,
         '--landing-overlay-opacity': overlayOpacity,
+        '--landing-bg-opacity': bgOpacity,
       }}
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
@@ -31,17 +33,6 @@ const cx = (...names) => names.filter(Boolean).map((n) => styles[n]).filter(Bool
         <span className={styles['landing-dot']} />
         <span className={styles['landing-dot']} />
       </div>
-
-      <section className={styles['landing-text-section']}>
-        <h1 className={styles['landing-title']}>
-          <span className={styles['landing-title-line']}>무라카미</span>
-          <span className={styles['landing-title-line']}>하루키전</span>
-        </h1>
-        <div className={styles['landing-divider-wrap']}>
-          <div className={styles['landing-divider']} />
-          <p className={styles['landing-author']}>안자이 이즈마루</p>
-        </div>
-      </section>
 
       <div
         className={styles['landing-swipe-area']}
