@@ -168,13 +168,15 @@ export default function PostcardSequence({ card }) {
         '--card-scale': String(cardScale),
       }}
     >
-      <div className={styles.card}>
-        <div className={styles.imageWrap} aria-hidden="true" style={{ '--img-aspect': imageAspect }}>
-          <img className={styles.image} src={imageUrl} alt="" onLoad={handleImageLoad} />
+      <div className={styles.cardBlock}>
+        <div className={styles.card}>
+          <div className={styles.imageWrap} aria-hidden="true" style={{ '--img-aspect': imageAspect }}>
+            <img className={styles.image} src={imageUrl} alt="" onLoad={handleImageLoad} />
+          </div>
         </div>
-      </div>
-      <div className={styles.floatingText} aria-hidden={text ? 'false' : 'true'}>
-        {typedText || text}
+        <div className={styles.floatingText} aria-hidden={text ? 'false' : 'true'}>
+          {typedText || text}
+        </div>
       </div>
     </div>
   );
