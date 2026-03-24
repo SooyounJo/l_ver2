@@ -63,7 +63,7 @@
   padding: 0 4px;
   opacity: 0;
   transition: opacity 0.5s ease;
-  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Malgun Gothic', sans-serif;
+  font-family: var(--app-font-family);
   font-size: clamp(12px, 1.6vw, 20px);
   font-weight: 700;
   line-height: 1.35;

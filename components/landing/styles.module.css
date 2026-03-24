@@ -2,7 +2,7 @@
 
 /* 모바일 첫 화면 — 세로 일러스트 비율 유지하며 전체가 보이도록 (contain) */
 .landing-page {
-  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Malgun Gothic', sans-serif;
+  font-family: var(--app-font-family);
   min-height: 100dvh;
   min-height: 100vh;
   background-color: #ffffff;

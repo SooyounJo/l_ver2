@@ -6,7 +6,7 @@
   height: 100dvh;
   height: 100vh;
   overflow: hidden;
-  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Malgun Gothic', sans-serif;
+  font-family: var(--app-font-family);
   touch-action: none;
 }
 

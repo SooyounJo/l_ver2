@@ -6,7 +6,7 @@
   height: 100dvh;
   height: 100vh;
   overflow: hidden;
-  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Malgun Gothic', sans-serif;
+  font-family: var(--app-font-family);
   touch-action: none;
   opacity: 1;
   transition: opacity 0.7s ease;
@@ -174,7 +174,7 @@
   position: absolute;
   left: 24px; /* 41 - 17 */
   top: 84px; /* 146 - 62 */
-  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Malgun Gothic', sans-serif;
+  font-family: var(--app-font-family);
   font-size: 40px;
   line-height: 1.2;
   color: #000;
@@ -196,7 +196,7 @@
   font-size: 14px;
   line-height: 1.2;
   color: #000;
-  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Malgun Gothic', sans-serif;
+  font-family: var(--app-font-family);
 }
 
 .end-front-img {
@@ -223,7 +223,7 @@
   position: absolute;
   left: 23px;
   top: 84px;
-  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Malgun Gothic', sans-serif;
+  font-family: var(--app-font-family);
   font-size: 40px;
   line-height: 1.2;
   color: #000;
@@ -245,7 +245,7 @@
   font-size: 14px;
   line-height: 1.2;
   color: #000;
-  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Malgun Gothic', sans-serif;
+  font-family: var(--app-font-family);
 }
 
 .end-back-img {
@@ -273,7 +273,7 @@
   font-size: 14px;
   line-height: 1.2;
   color: #000;
-  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Malgun Gothic', sans-serif;
+  font-family: var(--app-font-family);
 }
 
 .end-back-meta {
@@ -336,7 +336,7 @@
   font-size: 15px;
   line-height: 1.25;
   color: #000;
-  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Malgun Gothic', sans-serif;
+  font-family: var(--app-font-family);
 }
 
 /* 플립 후 안내 */
@@ -350,7 +350,7 @@
   font-size: 14px;
   line-height: 1.2;
   color: #fffcf1;
-  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Malgun Gothic', sans-serif;
+  font-family: var(--app-font-family);
   will-change: transform, opacity;
   animation: endHintTextPulse 1.7s ease-in-out infinite;
 }

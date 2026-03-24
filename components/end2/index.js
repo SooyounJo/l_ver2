@@ -14,13 +14,12 @@ export default function End2Screen({ onRestart } = {}) {
       >
         <section className={styles['end2-text-section']} aria-hidden="true">
           <h1 className={styles['end2-title']}>
-            <span className={styles['end2-title-line']}>무라카미</span>
-            <span className={styles['end2-title-line']}>하루키전</span>
+            <span className={styles['end2-title-line']}>하루키를</span>
+            <span className={styles['end2-title-line']}>말할 때</span>
+            <span className={styles['end2-title-line']}>우리가</span>
+            <span className={styles['end2-title-line']}>하고 싶은</span>
+            <span className={styles['end2-title-line']}>이야기</span>
           </h1>
-          <div className={styles['end2-divider-wrap']}>
-            <div className={styles['end2-divider']} />
-            <p className={styles['end2-author']}>안자이 미즈마루</p>
-          </div>
         </section>
 
         <div className={styles['end2-desc']} aria-hidden="true">
