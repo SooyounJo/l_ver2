@@ -49,17 +49,19 @@
 }
 
 .gridMode .tile {
+  animation: none !important;
   animation-play-state: paused;
-  opacity: 0.14;
+  transform: rotate(0deg) !important;
+}
+
+.gridReveal .tile {
+  animation: none !important;
+  transform: rotate(0deg) !important;
 }
 
 .gridReveal .tileSlot {
   animation: archivePop 900ms ease both;
   animation-delay: var(--pop-delay, 0s);
-}
-
-.gridReveal .tile {
-  opacity: 0.06;
 }
 
 @keyframes archivePop {

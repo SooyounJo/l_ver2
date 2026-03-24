@@ -362,12 +362,11 @@
   animation: typingHintFade 1.7s ease-in-out infinite;
 }
 
-/* 안내 문구(End 스타일과 동일) */
+/* 위로 슬라이드 힌트 — '터치하여 타이핑'과 동일 폰트 크기(.text-figma-below-card-hint 상속) */
 .text-figma-slide-hint {
-  width: 121px;
+  width: auto;
+  max-width: min(92vw, 18rem);
   text-align: center;
-  font-size: 14px;
-  line-height: 1.2;
   color: #fffcf1;
 }
 

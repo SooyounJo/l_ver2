@@ -1,16 +1,24 @@
 import { useEffect, useRef, useState } from 'react';
-import styles from './archiveSpotlight.module.css';
+import PostcardSequence from './postcardSequence';
+
+/** PostcardSequence 한 사이클(진입~퇴장) 대략 길이 — 다음 카드와 겹치지 않게 간격 확보 */
+const ARCHIVE_CARD_GAP_MS = 6800;
+const BASE_DELAY_MS = 2000;
+const maxItems = 5;
 
 export default function ArchiveSpotlight({ cards = [], runId = 0, active = false, textOverride = '' }) {
-  const [items, setItems] = useState([]);
+  const [playbackCard, setPlaybackCard] = useState(null);
   const timersRef = useRef([]);
 
   useEffect(() => {
-    if (!active || !runId) return undefined;
+    if (!active || !runId) {
+      setPlaybackCard(null);
+      return undefined;
+    }
 
     timersRef.current.forEach((t) => clearTimeout(t));
     timersRef.current = [];
-    setItems([]);
+    setPlaybackCard(null);
 
     const candidates = cards
       .filter((c) => c && typeof c === 'object')
@@ -21,24 +29,8 @@ export default function ArchiveSpotlight({ cards = [], runId = 0, active = false
         text: typeof c.text === 'string' ? c.text : '',
       }))
       .filter((c) => c.imageUrl);
-    const maxItems = 5;
-    const GRID_COUNT = 216;
-    const cols = Math.max(10, Math.ceil(Math.sqrt(GRID_COUNT * 1.7)));
-    const rows = Math.max(8, Math.ceil(GRID_COUNT / cols));
-
-    function gridLeftPct(col) {
-      return cols <= 1 ? 50 : 2 + (96 * col) / (cols - 1);
-    }
-    function gridTopPct(row) {
-      return rows <= 1 ? 50 : 2 + (96 * row) / (rows - 1);
-    }
-    const ITEM_DURATION_MS = 7200;
-    // 다음 카드 시작 시점: 직전 카드가 중앙에서 충분히 멈춘 뒤(약 5초 hold) 돌아가기 시작할 때쯤
-    const ITEM_NEXT_START_MS = 6100;
-    const BASE_DELAY_MS = 2000;
 
     async function run() {
-      // 입력이 아예 없으면: 랜덤 엽서 5장(텍스트는 빈 값)
       if (!candidates.length) {
         try {
           const r = await fetch(`/api/random-public-image?count=${maxItems}`);
@@ -49,27 +41,17 @@ export default function ArchiveSpotlight({ cards = [], runId = 0, active = false
             imageUrl,
             text: '',
           }));
+
           queueBase.forEach((entry, i) => {
             if (!entry.imageUrl) return;
-            // 좌->우 순서로 "그리드 기존 자리"에서 출발
-            const index = i;
-            const col = index % cols;
-            const row = Math.floor(index / cols);
-            const startLeft = gridLeftPct(col);
-            const startTop = gridTopPct(row);
-            const dx = 50 - startLeft;
-            const dy = 50 - startTop;
-
             const t = setTimeout(() => {
-              setItems((prev) => [
-                ...prev,
-                { ...entry, startLeft, startTop, dx, dy },
-              ]);
-              const removeT = setTimeout(() => {
-                setItems((prev) => prev.filter((p) => p.id !== entry.id));
-              }, ITEM_DURATION_MS);
-              timersRef.current.push(removeT);
-            }, i * ITEM_NEXT_START_MS + BASE_DELAY_MS);
+              const sentAt = runId * 1_000_000 + i * 100_000 + Date.now();
+              setPlaybackCard({
+                sentAt,
+                imageUrl: entry.imageUrl,
+                text: '',
+              });
+            }, i * ARCHIVE_CARD_GAP_MS + BASE_DELAY_MS);
             timersRef.current.push(t);
           });
         } catch (_) {
@@ -78,7 +60,6 @@ export default function ArchiveSpotlight({ cards = [], runId = 0, active = false
         return;
       }
 
-      // 입력이 있으면: 고유 imageUrl 기준으로 사용자 엽서를 담고, 5장 미만이면 사용자와 겹치지 않는 랜덤으로 채움 (같은 이미지 복제 금지)
       const urlSeen = new Set();
       const userUniqueInOrder = [];
       for (const c of candidates) {
@@ -124,32 +105,16 @@ export default function ArchiveSpotlight({ cards = [], runId = 0, active = false
 
       queue.forEach((entry, i) => {
         if (!entry.imageUrl) return;
-        // 좌->우 순서로 "그리드 기존 자리"에서 출발
-        const index = i;
-        const col = index % cols;
-        const row = Math.floor(index / cols);
-        const startLeft = gridLeftPct(col);
-        const startTop = gridTopPct(row);
-        const dx = 50 - startLeft;
-        const dy = 50 - startTop;
-
         const t = setTimeout(() => {
-          setItems((prev) => [
-            ...prev,
-            {
-              ...entry,
-              startLeft,
-              startTop,
-              dx,
-              dy,
-              text: textOverride && typeof textOverride === 'string' ? textOverride : entry.text,
-            },
-          ]);
-          const removeT = setTimeout(() => {
-            setItems((prev) => prev.filter((p) => p.id !== entry.id));
-          }, ITEM_DURATION_MS);
-          timersRef.current.push(removeT);
-        }, i * ITEM_NEXT_START_MS + BASE_DELAY_MS);
+          const sentAt = runId * 1_000_000 + i * 100_000 + Date.now();
+          const text =
+            textOverride && typeof textOverride === 'string' ? textOverride.trim() : (entry.text || '').trim();
+          setPlaybackCard({
+            sentAt,
+            imageUrl: entry.imageUrl,
+            text,
+          });
+        }, i * ARCHIVE_CARD_GAP_MS + BASE_DELAY_MS);
         timersRef.current.push(t);
       });
     }
@@ -159,31 +124,11 @@ export default function ArchiveSpotlight({ cards = [], runId = 0, active = false
     return () => {
       timersRef.current.forEach((t) => clearTimeout(t));
       timersRef.current = [];
-      setItems([]);
+      setPlaybackCard(null);
     };
   }, [active, runId, cards, textOverride]);
 
-  if (!active) return null;
-  if (!items.length) return null;
+  if (!active || !playbackCard || !playbackCard.sentAt) return null;
 
-  return (
-    <div className={styles.layer} aria-hidden="true">
-      {items.map((it) => (
-        <div
-          key={it.id}
-          className={styles.item}
-          style={{
-            left: `${it.startLeft}%`,
-            top: `${it.startTop}%`,
-            '--dx': `${it.dx}`,
-            '--dy': `${it.dy}`,
-          }}
-        >
-          <img className={styles.image} src={it.imageUrl} alt="" />
-          <div className={styles.text}>{it.text}</div>
-        </div>
-      ))}
-    </div>
-  );
+  return <PostcardSequence key={playbackCard.sentAt} card={playbackCard} entryOrigin="archive" />;
 }
-

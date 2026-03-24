@@ -53,7 +53,7 @@ const cx = (...names) => names.filter(Boolean).map((n) => styles[n]).filter(Bool
         onWheel={handleWheel}
         onClick={handleClick}
       >
-        <div className={styles['landing-cta']}>
+        <div className={cx('landing-cta-face', 'landing-cta')}>
           {phase === 0 ? (
             <>
               <span className={styles['landing-cta-line1']}>위로 스크롤 하여</span>

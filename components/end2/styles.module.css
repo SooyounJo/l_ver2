@@ -10,6 +10,7 @@
   touch-action: none;
 }
 
+/* 배경 — 다른 화면과 동일 pipa.jpg, 블러 20 + 어두운 레이어(::after) */
 .end2-page::before {
   content: '';
   position: fixed;
@@ -17,9 +18,11 @@
   z-index: 0;
   background: url('/pipa.jpg') center center / auto 130% no-repeat;
   background-attachment: scroll;
+  filter: blur(20px);
+  transform: scale(1.06);
+  transform-origin: center;
 }
 
-/* load 페이지처럼 블랙 70% 눌림 */
 .end2-page::after {
   content: '';
   position: fixed;
@@ -41,8 +44,8 @@
 
 .end2-text-section {
   position: absolute;
-  left: 16px;
-  top: 146px;
+  left: 27px;
+  top: 106px;
   text-align: left;
 }
 
@@ -74,7 +77,7 @@
   text-shadow: 0 4px 17.3px rgba(0, 0, 0, 0.55);
 }
 
-/* 종료 — 면 은은한 흰 그라데이션 + 예전처럼 흰 빛 번짐 + 블러 (.end2-desc 와 동일 좌우 27px) */
+/* 종료 — 저장하기와 동일: 화이트 타이포, 캡슐, 단색 면(그라데이션 없음) */
 .end2-exit-button {
   position: absolute;
   left: 27px;
@@ -82,107 +85,37 @@
   top: 718px;
   width: auto;
   margin: 0;
-  min-height: 60px;
-  padding: 1rem 1.5rem;
+  min-height: 48px;
+  padding: 12px 20px;
   box-sizing: border-box;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 999px;
-  /* 테두리는 약하게 — 밝기는 면에 */
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.2) 0%,
-    rgba(255, 255, 255, 0.12) 100%
-  );
-  /* 하얀 빛 번짐 (이전 강도 유지) */
-  box-shadow:
-    0 0 20px rgba(255, 255, 255, 0.18),
-    0 0 44px rgba(255, 255, 255, 0.1),
-    0 8px 24px rgba(255, 255, 255, 0.06);
-  backdrop-filter: blur(24px) saturate(1.06);
-  -webkit-backdrop-filter: blur(24px) saturate(1.06);
-  /* 사라졌다가(흐림·투명·축소) → 선명하게 등장 반복 */
-  animation: end2ExitPresence 3.6s ease-in-out infinite;
-  will-change: opacity, transform, backdrop-filter;
-  font-family: inherit;
-  font-size: clamp(1.125rem, 4.2vw, 1.375rem);
-  font-weight: 500;
-  letter-spacing: 0.06em;
-  line-height: 1.25;
-  color: #fff;
-  text-shadow: none;
+  appearance: none;
   cursor: pointer;
+  border: 1px solid rgba(255, 255, 255, 0.38);
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.22);
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.28), 0 4px 10px rgba(0, 0, 0, 0.18);
+  backdrop-filter: blur(10px) saturate(1.05);
+  -webkit-backdrop-filter: blur(10px) saturate(1.05);
+  color: #fff;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1;
+  text-align: center;
+  white-space: nowrap;
   user-select: none;
   -webkit-user-select: none;
   -webkit-tap-highlight-color: transparent;
-  isolation: isolate;
-  transition:
-    opacity 0.25s ease,
-    transform 0.2s ease,
-    background 0.25s ease,
-    border-color 0.25s ease,
-    box-shadow 0.25s ease,
-    backdrop-filter 0.25s ease,
-    -webkit-backdrop-filter 0.25s ease;
-}
-
-.end2-exit-button:hover {
-  animation: none;
-  opacity: 1;
-  transform: scale(1);
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.26) 0%,
-    rgba(255, 255, 255, 0.16) 100%
-  );
-  border-color: rgba(255, 255, 255, 0.14);
-  box-shadow:
-    0 0 28px rgba(255, 255, 255, 0.24),
-    0 0 52px rgba(255, 255, 255, 0.14),
-    0 10px 32px rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(28px) saturate(1.08);
-  -webkit-backdrop-filter: blur(28px) saturate(1.08);
 }
 
 .end2-exit-button:active {
-  animation: none;
-  opacity: 1;
-  transform: scale(0.99);
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.16) 0%,
-    rgba(255, 255, 255, 0.1) 100%
-  );
-  box-shadow:
-    0 0 16px rgba(255, 255, 255, 0.14),
-    0 0 36px rgba(255, 255, 255, 0.08);
-  backdrop-filter: blur(20px) saturate(1.05);
-  -webkit-backdrop-filter: blur(20px) saturate(1.05);
+  transform: translateY(1px) scale(0.99);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.22);
 }
 
 .end2-exit-button:focus-visible {
-  animation: none;
-  opacity: 1;
-  transform: scale(1);
-  outline: 1px solid rgba(255, 255, 255, 0.28);
+  outline: 2px solid rgba(255, 255, 255, 0.85);
   outline-offset: 3px;
-}
-
-/* 끝: 옅어짐 / 중간: 또렷하게 (투명도·크기·블러 동시) */
-@keyframes end2ExitPresence {
-  0%,
-  100% {
-    opacity: 0.38;
-    transform: scale(0.96);
-    backdrop-filter: blur(34px) saturate(1.1);
-    -webkit-backdrop-filter: blur(34px) saturate(1.1);
-  }
-  50% {
-    opacity: 1;
-    transform: scale(1);
-    backdrop-filter: blur(10px) saturate(1.04);
-    -webkit-backdrop-filter: blur(10px) saturate(1.04);
-  }
 }

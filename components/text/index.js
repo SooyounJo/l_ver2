@@ -119,7 +119,7 @@ export default function TextScreen({ onNext } = {}) {
                 if (e.key === 'Enter') e.preventDefault();
               }}
               rows={2}
-              maxLength={120}
+              maxLength={30}
               aria-label="무라카미 하루키에게 보낼 한 문장"
             />
             {!hasText && (

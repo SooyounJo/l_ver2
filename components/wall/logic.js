@@ -12,7 +12,8 @@ function attachReloadListener(socket) {
 
 const PAUSE_TILES_MS = 2500;
 const TILES_BURST_INTERVAL_MS = 5 * 60 * 1000;
-const ARCHIVE_INTERVAL_MS = 2 * 60 * 1000;
+/** 그리드 정렬 + 아카이빙 주기 (1분) */
+const ARCHIVE_INTERVAL_MS = 60 * 1000;
 const ARCHIVE_ACTIVE_MS = 42000;
 
 export function useWallLogic() {
@@ -24,6 +25,8 @@ export function useWallLogic() {
   const [archiveRunId, setArchiveRunId] = useState(0);
   const [archiveActive, setArchiveActive] = useState(false);
   const [archiveTextOverride, setArchiveTextOverride] = useState('');
+  /** 0: 균일 그리드, 1: 번갈아 지그재그 배치 */
+  const [gridVariant, setGridVariant] = useState(0);
   const lastArchivedSentAtRef = useRef(null);
   const cardsRef = useRef([]);
   const burstTimeoutRef = useRef(null);
@@ -116,34 +119,28 @@ export function useWallLogic() {
       const list = cardsRef.current;
       const latest = list && list.length ? list[list.length - 1] : null;
       const sentAt = latest && (typeof latest.sentAt === 'number' || typeof latest.sentAt === 'string') ? latest.sentAt : null;
-      if (sentAt == null) {
-        // 입력이 아예 없을 때도 아카이빙 연출은 진행 (랜덤 엽서 5장)
-        setArchiveTextOverride('');
-        setArchiveRunId((v) => v + 1);
-        setArchiveActive(true);
-        if (archiveActiveTimeoutRef.current) clearTimeout(archiveActiveTimeoutRef.current);
-        archiveActiveTimeoutRef.current = setTimeout(() => setArchiveActive(false), 16000);
-        return;
-      }
-      if (lastArchivedSentAtRef.current === sentAt) return;
 
-      lastArchivedSentAtRef.current = sentAt;
-      try {
-        fetch('/api/log-interaction', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            text: typeof latest.text === 'string' ? latest.text : '',
-            imageUrl: typeof latest.imageUrl === 'string' ? latest.imageUrl : '',
-          }),
-          keepalive: true,
-        }).catch(() => {});
-      } catch (_) {}
-      setArchiveRunId((v) => v + 1);
+      setGridVariant((v) => (v + 1) % 2);
       setArchiveTextOverride('');
+      setArchiveRunId((v) => v + 1);
       setArchiveActive(true);
       if (archiveActiveTimeoutRef.current) clearTimeout(archiveActiveTimeoutRef.current);
       archiveActiveTimeoutRef.current = setTimeout(() => setArchiveActive(false), ARCHIVE_ACTIVE_MS);
+
+      if (sentAt != null && lastArchivedSentAtRef.current !== sentAt) {
+        lastArchivedSentAtRef.current = sentAt;
+        try {
+          fetch('/api/log-interaction', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              text: typeof latest.text === 'string' ? latest.text : '',
+              imageUrl: typeof latest.imageUrl === 'string' ? latest.imageUrl : '',
+            }),
+            keepalive: true,
+          }).catch(() => {});
+        } catch (_) {}
+      }
     }, ARCHIVE_INTERVAL_MS);
 
     return () => {
@@ -169,6 +166,7 @@ export function useWallLogic() {
 
   const triggerArchiveNow = (overrideText) => {
     setArchiveTextOverride(typeof overrideText === 'string' ? overrideText : '');
+    setGridVariant((v) => (v + 1) % 2);
     setArchiveRunId((v) => v + 1);
     setArchiveActive(true);
     if (archiveActiveTimeoutRef.current) clearTimeout(archiveActiveTimeoutRef.current);
@@ -219,6 +217,7 @@ export function useWallLogic() {
     triggerBurstRB,
     triggerArchiveNow,
     triggerTestMobileInput,
+    gridVariant,
   };
 }
 

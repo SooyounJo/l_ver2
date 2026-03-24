@@ -25,7 +25,7 @@ function rand01(seed) {
   return x / 2147483647;
 }
 
-export default function PostcardSequence({ card }) {
+export default function PostcardSequence({ card, entryOrigin = 'input' }) {
   const [active, setActive] = useState(null);
   const [phase, setPhase] = useState('idle'); // idle|enter|text|hold2|exit
   const [target, setTarget] = useState({ x: 0.5, y: 0.5 });
@@ -162,6 +162,7 @@ export default function PostcardSequence({ card }) {
     <div
       className={styles.root}
       data-phase={phase}
+      data-entry={entryOrigin}
       style={{
         '--target-x': `${tx}px`,
         '--target-y': `${ty}px`,

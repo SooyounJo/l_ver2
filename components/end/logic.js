@@ -1,5 +1,27 @@
-import { useEffect, useMemo, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useRouter } from 'next/router';
+
+/** 사용자 미입력 시 엽서에 쓸, 무라카미 하루키에게 보내는 짧은 감상평 (표시 30자 이하 유지) */
+const MURAKAMI_IMPRESSION_QUOTES = [
+  '하루키 작가님, 문장 속 고독이 위로예요.',
+  '익숙한 불안이 이상하게 포근하게 다가와요.',
+  '운동화 신고 밤길 걷고 싶어졌어요.',
+  '현실과 꿈 사이를 건너게 해 주셔서 고마워요.',
+  '노래처럼 흐르는 서술이 너무 좋아요.',
+  '냉동고 뒷이야기 잊히지 않아요.',
+  '비 오는 날과 고양이가 자꾸 떠올라요.',
+  '읽을수록 제 안의 울림이 조금씩 커져요.',
+  '당신 글은 제게 작은 등대 같은 존재예요.',
+  '우울한 일상에 얇은 빛 한 줄기 같아요.',
+  '첫 문장부터 다시 읽게 되네요.',
+  '말하지 못한 마음을 대신 말해 줘서 고마워요.',
+  '조용한 밤에만 펼치고 싶은 책이에요.',
+];
+
+function pickRandomMurakamiImpression() {
+  const a = MURAKAMI_IMPRESSION_QUOTES;
+  return a[Math.floor(Math.random() * a.length)];
+}
 
 export function useEndLogic({ onNext } = {}) {
   const router = useRouter();
@@ -10,12 +32,6 @@ export function useEndLogic({ onNext } = {}) {
   const [dateText, setDateText] = useState('----.--.--');
   const [quoteText, setQuoteText] = useState('불러오는 중…');
   const [randomImageUrl, setRandomImageUrl] = useState(null);
-
-  const figmaFallbackQuote = useMemo(
-    () =>
-      '그의 소설은 늘 현실과 비현실의 경계에 구멍을 뚫어두는 느낌이다. 읽고 나면 딱히 큰 사건이 없었는데도, 이상하게 마음 한구석이 오래 허전해진다.',
-    []
-  );
 
   useEffect(() => {
     const prevHtmlOverflow = document.documentElement.style.overflow;
@@ -105,7 +121,7 @@ export function useEndLogic({ onNext } = {}) {
       }
       const trimmed = raw.trim();
       if (!trimmed) {
-        setQuoteText(figmaFallbackQuote);
+        if (!cancelled) setQuoteText(pickRandomMurakamiImpression());
         return;
       }
 
@@ -117,9 +133,9 @@ export function useEndLogic({ onNext } = {}) {
         });
         const data = await r.json().catch(() => ({}));
         const out = typeof data?.output === 'string' ? data.output : '';
-        if (!cancelled) setQuoteText(out || figmaFallbackQuote);
+        if (!cancelled) setQuoteText(out.trim() ? out : pickRandomMurakamiImpression());
       } catch (_) {
-        if (!cancelled) setQuoteText(figmaFallbackQuote);
+        if (!cancelled) setQuoteText(pickRandomMurakamiImpression());
       }
     }
 
@@ -127,7 +143,7 @@ export function useEndLogic({ onNext } = {}) {
     return () => {
       cancelled = true;
     };
-  }, [figmaFallbackQuote]);
+  }, []);
 
   useEffect(() => {
     const update = () => {

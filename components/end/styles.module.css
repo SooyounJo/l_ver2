@@ -180,20 +180,11 @@
   color: #000;
 }
 
-.end-front-divider {
-  position: absolute;
-  left: 24px;
-  top: 203px;
-  width: 42px;
-  height: 2px;
-  background: #000;
-}
-
 .end-front-author {
   position: absolute;
-  left: 73px;
-  top: 189px;
-  font-size: 14px;
+  left: 24px;
+  top: 200px;
+  font-size: clamp(17px, 4.1vw, 20px);
   line-height: 1.2;
   color: #000;
   font-family: var(--app-font-family);
@@ -229,20 +220,11 @@
   color: #000;
 }
 
-.end-back-divider {
-  position: absolute;
-  left: 23px;
-  top: 203px;
-  width: 42px;
-  height: 2px;
-  background: #000;
-}
-
 .end-back-author {
   position: absolute;
-  left: 72px;
-  top: 189px;
-  font-size: 14px;
+  left: 23px;
+  top: 200px;
+  font-size: clamp(17px, 4.1vw, 20px);
   line-height: 1.2;
   color: #000;
   font-family: var(--app-font-family);
@@ -268,41 +250,37 @@
 }
 
 .end-back-date {
-  position: relative;
-  right: 6px;
   font-size: 14px;
   line-height: 1.2;
   color: #000;
   font-family: var(--app-font-family);
 }
 
+/* 이미지(.end-back-img)와 동일 좌·너비 → 날짜·저장 우측이 일러스트 우측과 일치 */
 .end-back-meta {
   position: absolute;
-  right: 23px;
+  left: 23px;
+  width: 321px;
   top: var(--end-back-footer-top);
   display: flex;
   flex-direction: column;
   align-items: flex-end;
   gap: 10px;
+  box-sizing: border-box;
 }
 
 /* 저장 버튼 - 심플 글래스 모피즘 */
 .end-back-save {
   width: auto;
   height: 36px;
-  padding: 0 16px;
-  position: relative;
-  right: -3px;
-  border: 1px solid rgba(255, 255, 255, 0.36);
-  border-radius: 16px;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.33) 0%, rgba(255, 255, 255, 0.16) 100%);
-  box-shadow:
-    0 1px 0 rgba(255, 255, 255, 0.42) inset,
-    0 10px 22px rgba(0, 0, 0, 0.28),
-    0 4px 10px rgba(0, 0, 0, 0.18);
+  padding: 0 18px;
+  border: 1px solid rgba(255, 255, 255, 0.38);
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.22);
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.28), 0 4px 10px rgba(0, 0, 0, 0.18);
   backdrop-filter: blur(10px) saturate(1.05);
   -webkit-backdrop-filter: blur(10px) saturate(1.05);
-  color: rgba(20, 20, 20, 0.86);
+  color: #000;
   font-size: 16px;
   font-weight: 400;
   line-height: 1;
@@ -313,9 +291,7 @@
 
 .end-back-save:active {
   transform: translateY(1px) scale(0.99);
-  box-shadow:
-    0 1px 0 rgba(255, 255, 255, 0.3) inset,
-    0 6px 16px rgba(0, 0, 0, 0.22);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.22);
 }
 
 .end-back-save[data-saving='true'] {
@@ -332,22 +308,25 @@
   position: absolute;
   left: 23px;
   top: var(--end-back-footer-top);
-  width: 193px;
+  max-width: calc(100% - 46px);
+  width: 220px;
   font-size: 15px;
   line-height: 1.25;
   color: #000;
   font-family: var(--app-font-family);
 }
 
-/* 플립 후 안내 */
+/* 플립 후 안내 — 텍스트 페이지 .text-figma-below-card-hint 와 동일한 폰트 크기 */
 .end-send-text {
   position: absolute;
   left: 50%;
   top: 722px;
   transform: translateX(-50%);
-  width: 121px;
+  width: auto;
+  max-width: min(92vw, 18rem);
   text-align: center;
-  font-size: 14px;
+  font-size: clamp(1rem, 4.4vw, 1.25rem);
+  letter-spacing: -0.01em;
   line-height: 1.2;
   color: #fffcf1;
   font-family: var(--app-font-family);

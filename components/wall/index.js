@@ -5,7 +5,17 @@ import ScatteredTiles from './ScatteredTiles';
 import ArchiveSpotlight from './ArchiveSpotlight';
 
 export default function WallScreen() {
-  const { cards, lastInputAt, pauseTilesMs, tilesBurst, burstRunId, archiveRunId, archiveActive, archiveTextOverride } = useWallLogic();
+  const {
+    cards,
+    lastInputAt,
+    pauseTilesMs,
+    tilesBurst,
+    burstRunId,
+    archiveRunId,
+    archiveActive,
+    archiveTextOverride,
+    gridVariant,
+  } = useWallLogic();
 
   const clearWallSelection = () => {
     try {
@@ -20,7 +30,14 @@ export default function WallScreen() {
       onMouseDown={clearWallSelection}
       onTouchStart={clearWallSelection}
     >
-      <ScatteredTiles lastInputAt={lastInputAt} pauseMs={pauseTilesMs} burst={tilesBurst} burstRunId={burstRunId} archiveRunId={archiveRunId} />
+      <ScatteredTiles
+        lastInputAt={lastInputAt}
+        pauseMs={pauseTilesMs}
+        burst={tilesBurst}
+        burstRunId={burstRunId}
+        archiveRunId={archiveRunId}
+        gridVariant={gridVariant}
+      />
       <ArchiveSpotlight cards={cards} runId={archiveRunId} active={archiveActive} textOverride={archiveTextOverride} />
       {!archiveActive &&
         cards.map((card) =>
@@ -29,4 +46,3 @@ export default function WallScreen() {
     </div>
   );
 }
-

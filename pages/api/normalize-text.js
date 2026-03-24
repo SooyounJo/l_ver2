@@ -10,7 +10,7 @@ export default async function handler(req, res) {
   const input = text.trim();
   if (!input) return res.status(200).json({ output: '' });
 
-  const maxLen = 54;
+  const maxLen = 30;
   const system = buildNormalizeTextSystemPrompt({ maxLen });
 
   async function callOpenAI(userMessage) {

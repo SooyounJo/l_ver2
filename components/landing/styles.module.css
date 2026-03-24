@@ -172,29 +172,19 @@
   }
 }
 
-.landing-cta {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  width: 100%;
-  height: 100%;
-  min-height: 220vh;
-  padding: clamp(1rem, 4vw, 1.5rem) 1rem;
-  padding-bottom: max(clamp(1.25rem, 5vw, 1.75rem), env(safe-area-inset-bottom, 0));
-  text-decoration: none;
-  cursor: grab;
-  background: linear-gradient(180deg, rgba(230, 242, 255, 0.22) 0%, rgba(205, 228, 250, 0.24) 40%, rgba(178, 212, 245, 0.26) 100%);
-  border-radius: 25px 25px 0 0;
+/* 스크롤 모달 카드 면 — 랜딩 CTA / end2 종료 버튼 등에서 그대로 재사용 */
+.landing-cta-face {
+  position: relative;
   text-align: center;
   color: #ffffff;
+  background: linear-gradient(180deg, rgba(230, 242, 255, 0.22) 0%, rgba(205, 228, 250, 0.24) 40%, rgba(178, 212, 245, 0.26) 100%);
+  border-radius: 25px 25px 0 0;
   box-shadow: 0 13px 34px rgba(0, 0, 0, 0.42), inset -3px -2px 4px rgba(255, 255, 255, 0.12);
   opacity: 0.72;
   transition: transform 0.85s cubic-bezier(0.33, 1, 0.68, 1), background 0.45s ease, border-radius 0.45s ease, opacity 0.85s ease;
-  position: relative;
 }
 
-.landing-cta::after {
+.landing-cta-face::after {
   content: '';
   position: absolute;
   left: 0;
@@ -211,6 +201,20 @@
   );
 }
 
+.landing-cta {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  height: 100%;
+  min-height: 220vh;
+  padding: clamp(1rem, 4vw, 1.5rem) 1rem;
+  padding-bottom: max(clamp(1.25rem, 5vw, 1.75rem), env(safe-area-inset-bottom, 0));
+  text-decoration: none;
+  cursor: grab;
+}
+
 /* text 페이지 박스 상태: 박스가 화면 전체로 올라와 멈춤 */
 .landing-cta-wrap.expanded {
   top: 0;
@@ -222,10 +226,13 @@
 .landing-cta-wrap.expanded .landing-cta {
   min-height: auto;
   height: 100%;
-  background: linear-gradient(180deg, rgba(121, 124, 128, 0) 0%, rgb(244, 245, 252) 16.83%, rgb(255, 252, 240) 51.44%, rgb(255, 252, 240) 100%);
-  border-radius: 0 0 25px 25px;
   color: #646464;
   justify-content: center;
+}
+
+.landing-cta-wrap.expanded .landing-cta-face {
+  background: linear-gradient(180deg, rgba(121, 124, 128, 0) 0%, rgb(244, 245, 252) 16.83%, rgb(255, 252, 240) 51.44%, rgb(255, 252, 240) 100%);
+  border-radius: 0 0 25px 25px;
   opacity: 0.85;
 }
 
@@ -242,6 +249,9 @@
 
 .landing-cta-wrap.slide-up .landing-cta {
   transform: translateY(-120%);
+}
+
+.landing-cta-wrap.slide-up .landing-cta-face {
   opacity: 1;
 }
 
