@@ -4,6 +4,9 @@ import styles from './postcardSequence.module.css';
 
 const FALLBACK_CARD_IMAGE = getFirstDriveImageUrl();
 
+/** 진입~퇴장까지(퇴장 transition 포함) 대략 길이 — 아카이빙 다음 카드 간격에 사용 */
+export const POSTCARD_SEQUENCE_CYCLE_MS = 1200 + 360 + 2600 + 1600;
+
 function clamp(n, a, b) {
   return Math.max(a, Math.min(b, n));
 }
@@ -171,12 +174,16 @@ export default function PostcardSequence({ card, entryOrigin = 'input' }) {
     >
       <div className={styles.cardBlock}>
         <div className={styles.card}>
-          <div className={styles.imageWrap} aria-hidden="true" style={{ '--img-aspect': imageAspect }}>
-            <img className={styles.image} src={imageUrl} alt="" onLoad={handleImageLoad} />
+          <div className={styles.postcardSheet}>
+            <div className={styles.imageWrap} aria-hidden="true" style={{ '--img-aspect': imageAspect }}>
+              <img className={styles.image} src={imageUrl} alt="" onLoad={handleImageLoad} />
+            </div>
+            <div className={styles.textStrip}>
+              <div className={styles.floatingText} aria-hidden={text ? 'false' : 'true'}>
+                {typedText || text}
+              </div>
+            </div>
           </div>
-        </div>
-        <div className={styles.floatingText} aria-hidden={text ? 'false' : 'true'}>
-          {typedText || text}
         </div>
       </div>
     </div>

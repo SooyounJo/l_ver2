@@ -21,7 +21,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 10px;
+  gap: 0;
   z-index: 1;
 }
 
@@ -37,15 +37,27 @@
   z-index: 1;
 }
 
+/* 상단 이미지 + 하단 흰 텍스트 영역(참고 레이아웃) */
+.postcardSheet {
+  display: flex;
+  flex-direction: column;
+  width: min(92vw, 440px);
+  height: min(70vh, 640px);
+  max-height: 72vh;
+  overflow: hidden;
+  background: #ffffff;
+  box-shadow: 0 14px 44px rgba(0, 0, 0, 0.14);
+  border-radius: 2px;
+}
+
 .imageWrap {
   position: relative;
-  width: auto;
-  height: 40vh;
-  max-width: 86vw;
-  aspect-ratio: var(--img-aspect, 16 / 9);
+  flex: 0 0 62%;
+  min-height: 0;
+  width: 100%;
+  max-width: 100%;
   overflow: hidden;
-  background: transparent;
-  box-shadow: none;
+  background: #f2f2f0;
 }
 
 .image {
@@ -55,19 +67,31 @@
   display: block;
 }
 
+.textStrip {
+  flex: 1 1 38%;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(0.65rem, 2.2vw, 1rem) clamp(0.75rem, 3vw, 1.1rem);
+  background: #ffffff;
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
+  box-sizing: border-box;
+}
+
 .floatingText {
   position: relative;
   width: 100%;
-  max-width: min(90vw, 680px);
-  margin-top: 0;
-  padding: 0 4px;
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
   opacity: 0;
   transition: opacity 0.5s ease;
   font-family: var(--app-font-family);
-  font-size: clamp(18px, 5.5vw, 36px);
-  font-weight: 700;
-  line-height: 1.4;
-  color: #111111;
+  font-size: clamp(16px, 4.8vw, 28px);
+  font-weight: 600;
+  line-height: 1.45;
+  color: #1a1a1a;
   word-break: keep-all;
   overflow-wrap: anywhere;
   text-align: center;

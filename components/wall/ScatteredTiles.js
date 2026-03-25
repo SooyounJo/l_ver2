@@ -42,7 +42,7 @@ function buildTileStatic(i, src) {
     shape === 0 ? base : shape === 1 ? Math.round(base * (1.15 + seededFloat(i * 31, 0.5))) : Math.round(base * (0.6 + seededFloat(i * 37, 0.35)));
   const height =
     shape === 0 ? base : shape === 1 ? Math.round(base * (0.65 + seededFloat(i * 41, 0.35))) : Math.round(base * (1.2 + seededFloat(i * 43, 0.5)));
-  const rotation = -14 + seededFloat(i * 17, 28);
+  const rotation = 0;
   const animClass = styles[`anim${(i % ROUTINE_COUNT) + 1}`];
   const delay = seededFloat(i * 19, 8);
   const revealDelay = seededFloat(i * 47 + 13, 8);
@@ -50,7 +50,8 @@ function buildTileStatic(i, src) {
 }
 
 function gridDims(count) {
-  const cols = Math.max(10, Math.ceil(Math.sqrt(count * 1.7)));
+  /* 열 수를 줄여 행 수를 늘리면 세로 간격(행간)이 촘촘해짐 */
+  const cols = Math.max(12, Math.ceil(Math.sqrt(count * 1.05)));
   const rows = Math.max(8, Math.ceil(count / cols));
   return { cols, rows };
 }
@@ -75,8 +76,8 @@ function applyUniformGridSizing(tiles, cols, rows, gridActive) {
     const vh = typeof window !== 'undefined' ? window.innerHeight : 600;
     const cellW = (vw * 0.94) / Math.max(cols, 1);
     const cellH = (vh * 0.94) / Math.max(rows, 1);
-    const s = Math.floor(Math.min(cellW, cellH) * 0.88);
-    const size = Math.max(MIN_SIZE, Math.min(Math.round(s), MAX_SIZE + 24));
+    const s = Math.floor(Math.min(cellW, cellH) * 0.96);
+    const size = Math.max(MIN_SIZE, Math.min(Math.round(s), MAX_SIZE + 40));
     for (let i = 0; i < tiles.length; i += 1) {
       const t = tiles[i];
       if (t._scatterW == null) {
@@ -274,11 +275,11 @@ export default function ScatteredTiles({
     applyDestinations('grid', gridVariant);
     const t1 = setTimeout(() => {
       setLayoutMode('grid-reveal');
-    }, 2200);
+    }, 2800);
     const t2 = setTimeout(() => {
       setLayoutMode('scatter');
       applyDestinations('scatter', gridVariant);
-    }, 14000);
+    }, 20000);
     return () => {
       clearTimeout(t1);
       clearTimeout(t2);

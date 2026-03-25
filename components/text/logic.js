@@ -1,9 +1,18 @@
 import { useState, useRef, useCallback, useEffect } from 'react';
 import { useRouter } from 'next/router';
+import { POSTCARD_QUOTE_MAX_CHARS } from '@/lib/postcardQuoteLimit';
 
 export function useTextLogic({ onNext } = {}) {
   const router = useRouter();
-  const [inputValue, setInputValue] = useState('');
+  const [inputValue, setInputValueRaw] = useState('');
+
+  const setInputValue = useCallback((next) => {
+    setInputValueRaw((prev) => {
+      const v = typeof next === 'function' ? next(prev) : next;
+      const s = typeof v === 'string' ? v : String(v ?? '');
+      return s.slice(0, POSTCARD_QUOTE_MAX_CHARS);
+    });
+  }, []);
   const [touchStartY, setTouchStartY] = useState(null);
   const [isExiting, setIsExiting] = useState(false);
   const [dateText, setDateText] = useState('----.--.--');
@@ -49,7 +58,8 @@ export function useTextLogic({ onNext } = {}) {
 
   const persistInput = useCallback(() => {
     try {
-      localStorage.setItem('platforml:userText', inputValue);
+      const safe = inputValue.slice(0, POSTCARD_QUOTE_MAX_CHARS);
+      localStorage.setItem('platforml:userText', safe);
     } catch (_) {
       // ignore
     }

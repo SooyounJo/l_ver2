@@ -1,27 +1,12 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useRouter } from 'next/router';
+import { POSTCARD_QUOTE_MAX_CHARS } from '@/lib/postcardQuoteLimit';
 
-/** 사용자 미입력 시 엽서에 쓸, 무라카미 하루키에게 보내는 짧은 감상평 (표시 30자 이하 유지) */
-const MURAKAMI_IMPRESSION_QUOTES = [
-  '하루키 작가님, 문장 속 고독이 위로예요.',
-  '익숙한 불안이 이상하게 포근하게 다가와요.',
-  '운동화 신고 밤길 걷고 싶어졌어요.',
-  '현실과 꿈 사이를 건너게 해 주셔서 고마워요.',
-  '노래처럼 흐르는 서술이 너무 좋아요.',
-  '냉동고 뒷이야기 잊히지 않아요.',
-  '비 오는 날과 고양이가 자꾸 떠올라요.',
-  '읽을수록 제 안의 울림이 조금씩 커져요.',
-  '당신 글은 제게 작은 등대 같은 존재예요.',
-  '우울한 일상에 얇은 빛 한 줄기 같아요.',
-  '첫 문장부터 다시 읽게 되네요.',
-  '말하지 못한 마음을 대신 말해 줘서 고마워요.',
-  '조용한 밤에만 펼치고 싶은 책이에요.',
-];
-
-function pickRandomMurakamiImpression() {
-  const a = MURAKAMI_IMPRESSION_QUOTES;
-  return a[Math.floor(Math.random() * a.length)];
-}
+/**
+ * 사용자 미입력 시 엽서 뒷면 기본 문구 (길이는 POSTCARD_QUOTE_MAX_CHARS 이하).
+ */
+const DEFAULT_EMPTY_POSTCARD_QUOTE =
+  '하루키 작가님, 익숙한 불안이 포근한 밤길 같아요. 첫 문장부터 다시 읽고 싶어요.';
 
 export function useEndLogic({ onNext } = {}) {
   const router = useRouter();
@@ -119,9 +104,9 @@ export function useEndLogic({ onNext } = {}) {
       } catch (_) {
         raw = '';
       }
-      const trimmed = raw.trim();
+      const trimmed = raw.trim().slice(0, POSTCARD_QUOTE_MAX_CHARS);
       if (!trimmed) {
-        if (!cancelled) setQuoteText(pickRandomMurakamiImpression());
+        if (!cancelled) setQuoteText(DEFAULT_EMPTY_POSTCARD_QUOTE);
         return;
       }
 
@@ -133,9 +118,9 @@ export function useEndLogic({ onNext } = {}) {
         });
         const data = await r.json().catch(() => ({}));
         const out = typeof data?.output === 'string' ? data.output : '';
-        if (!cancelled) setQuoteText(out.trim() ? out : pickRandomMurakamiImpression());
+        if (!cancelled) setQuoteText(out.trim() ? out : DEFAULT_EMPTY_POSTCARD_QUOTE);
       } catch (_) {
-        if (!cancelled) setQuoteText(pickRandomMurakamiImpression());
+        if (!cancelled) setQuoteText(DEFAULT_EMPTY_POSTCARD_QUOTE);
       }
     }
 
@@ -163,9 +148,11 @@ export function useEndLogic({ onNext } = {}) {
   const sendToWall = useCallback(() => {
     let userTextForWall = '';
     try {
-      userTextForWall = (localStorage.getItem('platforml:userText') || '').trim();
+      userTextForWall = (localStorage.getItem('platforml:userText') || '')
+        .trim()
+        .slice(0, POSTCARD_QUOTE_MAX_CHARS);
     } catch (_) {}
-    if (!userTextForWall) userTextForWall = quoteText;
+    if (!userTextForWall) userTextForWall = quoteText.slice(0, POSTCARD_QUOTE_MAX_CHARS);
 
     const payload = {
       text: userTextForWall,
@@ -175,10 +162,12 @@ export function useEndLogic({ onNext } = {}) {
     // 시트에는 사용자가 적은 원문 저장 (localStorage에서 직전에 읽어서 전송)
     let userTextForSheet = '';
     try {
-      userTextForSheet = (localStorage.getItem('platforml:userText') || '').trim();
+      userTextForSheet = (localStorage.getItem('platforml:userText') || '')
+        .trim()
+        .slice(0, POSTCARD_QUOTE_MAX_CHARS);
     } catch (_) {}
-    if (!userTextForSheet) userTextForSheet = quoteText;
-    const textToLog = userTextForSheet || quoteText;
+    if (!userTextForSheet) userTextForSheet = quoteText.slice(0, POSTCARD_QUOTE_MAX_CHARS);
+    const textToLog = userTextForSheet || quoteText.slice(0, POSTCARD_QUOTE_MAX_CHARS);
     try {
       fetch('/api/log-interaction', {
         method: 'POST',

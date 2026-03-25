@@ -1,4 +1,5 @@
 import { buildNormalizeTextSystemPrompt } from '../../components/prompts/normalizeTextPrompt';
+import { POSTCARD_QUOTE_MAX_CHARS } from '../../lib/postcardQuoteLimit';
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -10,7 +11,7 @@ export default async function handler(req, res) {
   const input = text.trim();
   if (!input) return res.status(200).json({ output: '' });
 
-  const maxLen = 30;
+  const maxLen = POSTCARD_QUOTE_MAX_CHARS;
   const system = buildNormalizeTextSystemPrompt({ maxLen });
 
   async function callOpenAI(userMessage) {

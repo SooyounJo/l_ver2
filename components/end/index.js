@@ -1,5 +1,6 @@
 import { useCallback, useMemo, useRef, useState } from 'react';
 import { getFirstDriveImageUrl } from '@/lib/driveImages';
+import { POSTCARD_QUOTE_MAX_CHARS } from '@/lib/postcardQuoteLimit';
 import { useEndLogic } from './logic';
 import styles from './styles.module.css';
 
@@ -245,6 +246,9 @@ export default function EndScreen({ onNext } = {}) {
               </div>
               <div className={styles['end-back-meta']}>
                 <div className={styles['end-back-date']}>{dateText}</div>
+              </div>
+              <div className={styles['end-back-quote']}>{quoteText.slice(0, POSTCARD_QUOTE_MAX_CHARS)}</div>
+              <div className={styles['end-back-save-wrap']} data-no-postcard-capture>
                 <button
                   type="button"
                   className={styles['end-back-save']}
@@ -256,7 +260,6 @@ export default function EndScreen({ onNext } = {}) {
                   저장하기
                 </button>
               </div>
-              <div className={styles['end-back-quote']}>{quoteText.slice(0, 30)}</div>
             </div>
           </div>
         </div>

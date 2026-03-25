@@ -80,13 +80,13 @@
 /* 종료 — 저장하기와 동일: 화이트 타이포, 캡슐, 단색 면(그라데이션 없음) */
 .end2-exit-button {
   position: absolute;
-  left: 27px;
-  right: 27px;
+  left: 50%;
   top: 718px;
-  width: auto;
+  width: max-content;
+  max-width: calc(100% - 54px);
   margin: 0;
   min-height: 48px;
-  padding: 12px 20px;
+  padding: 12px 12px;
   box-sizing: border-box;
   display: flex;
   align-items: center;
@@ -100,6 +100,7 @@
   backdrop-filter: blur(10px) saturate(1.05);
   -webkit-backdrop-filter: blur(10px) saturate(1.05);
   color: #fff;
+  font-family: var(--app-font-family);
   font-size: 16px;
   font-weight: 400;
   line-height: 1;
@@ -108,10 +109,11 @@
   user-select: none;
   -webkit-user-select: none;
   -webkit-tap-highlight-color: transparent;
+  transform: translateX(-50%);
 }
 
 .end2-exit-button:active {
-  transform: translateY(1px) scale(0.99);
+  transform: translateX(-50%) translateY(1px) scale(0.99);
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.22);
 }
 

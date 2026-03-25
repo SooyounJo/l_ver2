@@ -53,7 +53,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: clamp(0.35rem, 2.8vw, 0.75rem);
+  gap: clamp(0.32rem, 2.4vw, 0.7rem);
   padding: clamp(0.35rem, 2vw, 0.5rem) 0;
   flex-shrink: 0;
   transform: translateY(-10px);
@@ -63,24 +63,25 @@
   caret-color: transparent;
 }
 
+/* 미선택: 밝은 회색 / 선택: 어두운 회색 */
 .landing-dot {
-  width: clamp(0.35rem, 4vw, 1rem);
-  height: clamp(0.35rem, 4vw, 1rem);
+  width: clamp(0.175rem, 2vw, 0.5rem);
+  height: clamp(0.175rem, 2vw, 0.5rem);
   border-radius: 50%;
   user-select: none;
   -webkit-user-select: none;
   pointer-events: none;
-  background: rgba(210, 210, 210, 0.7);
-  box-shadow: 0 0 10px rgba(190, 190, 190, 0.5);
+  background: #a3a3a3;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.12);
   filter: blur(0.15px);
-  transition: background 0.2s, box-shadow 0.2s, opacity 0.2s;
-  opacity: 0.85;
+  transition: background 0.2s, box-shadow 0.2s;
+  opacity: 1;
   animation: landingDotGlow 3.2s ease-in-out infinite;
 }
 
 .active {
-  background: rgba(235, 235, 235, 0.98);
-  box-shadow: 0 0 16px rgba(210, 210, 210, 0.9);
+  background: #3f3f3f;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.22);
   filter: blur(0px);
   opacity: 1;
   animation: landingDotGlowActive 3.2s ease-in-out infinite;
@@ -330,32 +331,26 @@
 }
 
 @keyframes landingDotGlow {
-  0% {
-    opacity: 0.65;
-    box-shadow: 0 0 8px rgba(255, 255, 255, 0.28);
+  0%,
+  100% {
+    background: #9a9a9a;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.12);
   }
   50% {
-    opacity: 0.95;
-    box-shadow: 0 0 14px rgba(255, 255, 255, 0.45);
-  }
-  100% {
-    opacity: 0.65;
-    box-shadow: 0 0 8px rgba(255, 255, 255, 0.28);
+    background: #b0b0b0;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.14);
   }
 }
 
 @keyframes landingDotGlowActive {
-  0% {
-    opacity: 0.7;
-    box-shadow: 0 0 10px rgba(255, 255, 255, 0.38);
+  0%,
+  100% {
+    background: #3a3a3a;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
   }
   50% {
-    opacity: 1;
-    box-shadow: 0 0 18px rgba(255, 255, 255, 0.72);
-  }
-  100% {
-    opacity: 0.7;
-    box-shadow: 0 0 10px rgba(255, 255, 255, 0.38);
+    background: #4d4d4d;
+    box-shadow: 0 0 12px rgba(0, 0, 0, 0.26);
   }
 }
 

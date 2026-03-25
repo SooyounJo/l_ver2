@@ -55,27 +55,28 @@
   top: 72px;
   transform: translateX(-50%);
   display: flex;
-  gap: 13px;
+  gap: 12px;
   user-select: none;
   -webkit-user-select: none;
   cursor: default;
   caret-color: transparent;
 }
 
+/* 미선택: 밝은 회색 / 선택: 어두운 회색 */
 .end-dot {
-  width: 16px;
-  height: 16px;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.35);
-  opacity: 0.45;
+  background: #9a9a9a;
+  opacity: 1;
   user-select: none;
   -webkit-user-select: none;
   pointer-events: none;
 }
 
 .active {
-  background: rgba(255, 255, 255, 0.95);
-  opacity: 0.95;
+  background: #3a3a3a;
+  opacity: 1;
 }
 
 .end-front-title,
@@ -135,8 +136,8 @@
 .back {}
 .end-face.back {
   transform: rotateY(180deg);
-  /* 하단 행: 좌측 사용자 문장 / 우측 날짜+저장 — 상단 기준 동일 */
-  --end-back-footer-top: 484px;
+  /* 하단 행: 좌측 사용자 문장 / 우측 날짜+저장 — 이미지 하단(467px)과의 간격 ~20px */
+  --end-back-footer-top: 488px;
 }
 
 /* 공통 배경(유리 느낌) */
@@ -256,17 +257,29 @@
   font-family: var(--app-font-family);
 }
 
-/* 이미지(.end-back-img)와 동일 좌·너비 → 날짜·저장 우측이 일러스트 우측과 일치 */
+/* 우측 날짜 — 인용문과 같은 푸터 기준선 (--end-back-footer-top) */
 .end-back-meta {
   position: absolute;
-  left: 23px;
-  width: 321px;
+  right: 23px;
+  left: auto;
   top: var(--end-back-footer-top);
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 10px;
+  transform: none;
+  text-align: right;
   box-sizing: border-box;
+  width: auto;
+  max-width: min(120px, 36%);
+}
+
+/* 저장하기 — 엽서 면 기준 가로 중앙·하단 */
+.end-back-save-wrap {
+  position: absolute;
+  left: 50%;
+  bottom: 22px;
+  transform: translateX(-50%);
+  z-index: 2;
+  display: flex;
+  justify-content: center;
+  pointer-events: auto;
 }
 
 /* 저장 버튼 - 심플 글래스 모피즘 */
@@ -281,6 +294,7 @@
   backdrop-filter: blur(10px) saturate(1.05);
   -webkit-backdrop-filter: blur(10px) saturate(1.05);
   color: #000;
+  font-family: var(--app-font-family);
   font-size: 16px;
   font-weight: 400;
   line-height: 1;
@@ -308,12 +322,13 @@
   position: absolute;
   left: 23px;
   top: var(--end-back-footer-top);
-  max-width: calc(100% - 46px);
-  width: 220px;
+  max-width: min(220px, calc(100% - 46px - 96px));
+  width: auto;
   font-size: 15px;
   line-height: 1.25;
   color: #000;
   font-family: var(--app-font-family);
+  word-break: keep-all;
 }
 
 /* 플립 후 안내 — 텍스트 페이지 .text-figma-below-card-hint 와 동일한 폰트 크기 */

@@ -25,6 +25,14 @@ body {
   overflow-x: hidden;
 }
 
+/* 네이티브 컨트롤이 시스템 산세리프로 굳는 것 방지 */
+button,
+input,
+textarea,
+select {
+  font-family: inherit;
+}
+
 /* 페이지 공통 레이아웃 - 모바일 우선 */
 .page-layout {
   min-height: 100dvh;

@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { POSTCARD_QUOTE_MAX_CHARS } from '@/lib/postcardQuoteLimit';
 import { useTextLogic } from './logic';
 import styles from './styles.module.css';
 
@@ -82,7 +83,6 @@ export default function TextScreen({ onNext } = {}) {
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
       onWheel={handleWheel}
-      onClick={focusInput}
     >
       <div className={cx('text-figma-card', introOn && 'text-figma-intro', isExiting && 'text-figma-card-exit')}>
         <div
@@ -107,19 +107,26 @@ export default function TextScreen({ onNext } = {}) {
           <span className={styles['text-figma-quote-open']} aria-hidden="true">
             “
           </span>
-          <div className={styles['text-figma-quote-wrap']}>
+          <div
+            className={styles['text-figma-quote-wrap']}
+            onClick={(e) => {
+              e.stopPropagation();
+              focusInput();
+            }}
+          >
             <textarea
               ref={textareaRef}
               className={cx('text-figma-quote-input', !hasText && 'text-figma-quote-input--empty')}
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               onInput={syncTextareaHeight}
-              onClick={() => textareaRef.current?.focus()}
+              onClick={(e) => e.stopPropagation()}
+              onFocus={(e) => e.stopPropagation()}
               onKeyDown={(e) => {
                 if (e.key === 'Enter') e.preventDefault();
               }}
               rows={2}
-              maxLength={30}
+              maxLength={POSTCARD_QUOTE_MAX_CHARS}
               aria-label="무라카미 하루키에게 보낼 한 문장"
             />
             {!hasText && (

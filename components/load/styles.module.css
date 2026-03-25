@@ -10,24 +10,29 @@
   touch-action: none;
 }
 
-/* 배경 - landing 과 동일 (pipa.jpg) — 도형/질감을 카드보다 뒤로 눌러 보이게 */
+/* 배경 — 랜딩과 동일 포스터, 블러만 약하게 */
 .load-figma-page::before {
   content: '';
   position: absolute;
   inset: 0;
   z-index: 0;
-  background: url('/pipa.jpg') center center / auto 130% no-repeat;
+  background: #ffffff url('/ui/Jandi_20260311_172605.png') center calc(70px + env(safe-area-inset-top, 0)) / contain no-repeat;
   background-attachment: scroll;
-  filter: brightness(0.72) saturate(0.95);
+  filter: blur(5px);
+  transform: scale(1.07);
+  transform-origin: center top;
 }
 
-/* 블랙 오버레이 — 배경(엽서 뒤 비치는 영역) 추가로 눌림 */
+/* 상단 라이트 그라데이션(랜딩과 동일) + 아주 약한 딤 — 흰 로딩 문구 대비 */
 .load-figma-page::after {
   content: '';
   position: absolute;
   inset: 0;
   z-index: 0;
-  background: rgba(0, 0, 0, 0.66);
+  pointer-events: none;
+  background:
+    linear-gradient(0deg, rgba(255, 255, 255, 0.96) 0%, rgba(255, 255, 255, 0) 40%),
+    rgba(0, 0, 0, 0.14);
 }
 
 /* 애니메이션 레이어(텍스트 뒤) */
@@ -117,6 +122,8 @@
 }
 
 .sway {}
+
+/* cx('load-dot','active')용 export — 스타일은 .load-dot.active에 정의 */
 .active {}
 
 /* 인디케이터 — 바쁜 엽서 배경 위에서 도트가 읽히도록 뒤에 그림자/소프트 블롭 */
@@ -151,19 +158,23 @@
   pointer-events: none;
 }
 
+/* 세 점 모두 화이트 (바운스·딜레이로만 강조) */
 .load-dot {
   width: 16px;
   height: 16px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.35);
-  opacity: 0.6;
+  background: #ffffff;
   animation: loadDotBounce 0.9s cubic-bezier(0.33, 1, 0.68, 1) infinite;
   box-shadow:
-    0 2px 6px rgba(0, 0, 0, 0.55),
-    0 4px 14px rgba(0, 0, 0, 0.35);
+    0 2px 6px rgba(0, 0, 0, 0.35),
+    0 4px 12px rgba(0, 0, 0, 0.2);
   user-select: none;
   -webkit-user-select: none;
   pointer-events: none;
+}
+
+.load-dot.active {
+  animation-name: loadDotBounceSelected;
 }
 
 .load-dot:nth-child(1) { animation-delay: 0s; }
@@ -174,18 +185,31 @@
   0%,
   100% {
     transform: translateY(0) scale(0.92);
-    opacity: 0.45;
-    background: rgba(255, 255, 255, 0.35);
+    background: #ffffff;
   }
   35% {
     transform: translateY(-10px) scale(1);
-    opacity: 0.95;
-    background: rgba(255, 255, 255, 0.9);
+    background: #ffffff;
   }
   55% {
     transform: translateY(0) scale(0.98);
-    opacity: 0.7;
-    background: rgba(255, 255, 255, 0.55);
+    background: #ffffff;
+  }
+}
+
+@keyframes loadDotBounceSelected {
+  0%,
+  100% {
+    transform: translateY(0) scale(0.92);
+    background: #ffffff;
+  }
+  35% {
+    transform: translateY(-10px) scale(1);
+    background: #ffffff;
+  }
+  55% {
+    transform: translateY(0) scale(0.98);
+    background: #ffffff;
   }
 }
 
@@ -205,8 +229,8 @@
   color: rgba(255, 255, 255, 1);
   opacity: 1;
   text-shadow:
-    0 1px 2px rgba(0, 0, 0, 0.32),
-    0 2px 8px rgba(0, 0, 0, 0.22);
+    0 1px 1px rgba(0, 0, 0, 0.12),
+    0 1px 4px rgba(0, 0, 0, 0.08);
 }
 
 @media (max-width: 420px) {
