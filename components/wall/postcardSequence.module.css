@@ -111,11 +111,15 @@
   animation: enterUp 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-/* 아카이빙: 그리드 자리에서 앞으로 튀어나오듯 확대 (아래 슬라이드 없음) */
+/* 아카이빙: 나무 군집(--tree-origin)에서 중앙으로 튀어나오며 확대 */
 .root[data-entry='archive'][data-phase='enter'] .card {
   opacity: 0;
-  transform: scale(0.1);
-  animation: enterPop 1.1s cubic-bezier(0.22, 1, 0.32, 1.12) forwards;
+  transform: translate(
+      calc(var(--tree-origin-x, 0.5) * 100vw - 50vw),
+      calc(var(--tree-origin-y, 0.4) * 100vh - 50vh)
+    )
+    scale(0.06);
+  animation: enterPopFromTree 1.15s cubic-bezier(0.22, 1, 0.32, 1.12) forwards;
 }
 
 .root[data-phase='enter']::before,
@@ -131,18 +135,22 @@
   }
 }
 
-@keyframes enterPop {
+@keyframes enterPopFromTree {
   0% {
     opacity: 0;
-    transform: scale(0.08);
+    transform: translate(
+        calc(var(--tree-origin-x, 0.5) * 100vw - 50vw),
+        calc(var(--tree-origin-y, 0.4) * 100vh - 50vh)
+      )
+      scale(0.06);
   }
-  78% {
+  72% {
     opacity: 1;
-    transform: scale(1.04);
+    transform: translate(0, 0) scale(1.05);
   }
   100% {
     opacity: 1;
-    transform: scale(1);
+    transform: translate(0, 0) scale(1);
   }
 }
 

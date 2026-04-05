@@ -28,10 +28,17 @@ function rand01(seed) {
   return x / 2147483647;
 }
 
+/** 나무 캐노피·엽서 군집 대략 영역(화면 비율 0~1). wallTreeMount screenOrigin 하단 배치에 맞춤 */
+const TREE_CLUSTER_X_MIN = 0.32;
+const TREE_CLUSTER_X_MAX = 0.68;
+const TREE_CLUSTER_Y_MIN = 0.28;
+const TREE_CLUSTER_Y_MAX = 0.58;
+
 export default function PostcardSequence({ card, entryOrigin = 'input' }) {
   const [active, setActive] = useState(null);
   const [phase, setPhase] = useState('idle'); // idle|enter|text|hold2|exit
   const [target, setTarget] = useState({ x: 0.5, y: 0.5 });
+  const [treeOrigin, setTreeOrigin] = useState({ x: 0.5, y: 0.4 });
   const [cardScale, setCardScale] = useState(0.7);
   const [imageAspect, setImageAspect] = useState('16 / 9');
   const [typedText, setTypedText] = useState('');
@@ -76,16 +83,27 @@ export default function PostcardSequence({ card, entryOrigin = 'input' }) {
     timersRef.current.forEach((t) => clearTimeout(t));
     timersRef.current = [];
 
-    // Destination: deterministic random position on viewport (no tree)
     const seedBase = hashSeed(String(card.sentAt || Date.now()));
     const r1 = rand01(seedBase);
     const r2 = rand01(seedBase + 911);
     const r3 = rand01(seedBase + 1777);
-    const xRatio = 0.1 + 0.8 * r1;
-    const yRatio = 0.1 + 0.8 * r2;
+    const r4 = rand01(seedBase + 333);
+    const r5 = rand01(seedBase + 777);
+    const clusterX = TREE_CLUSTER_X_MIN + (TREE_CLUSTER_X_MAX - TREE_CLUSTER_X_MIN) * r4;
+    const clusterY = TREE_CLUSTER_Y_MIN + (TREE_CLUSTER_Y_MAX - TREE_CLUSTER_Y_MIN) * r5;
     // Keep postcard size below previous max while allowing natural size variation.
     setCardScale(0.5 + 0.28 * r3);
-    setTarget({ x: xRatio, y: yRatio });
+
+    if (entryOrigin === 'archive') {
+      // 진입·퇴장 모두 같은 나무 군집 좌표(들어올 때 튀어나오고, 나갈 때 그쪽으로 들어감)
+      setTreeOrigin({ x: clusterX, y: clusterY });
+      setTarget({ x: clusterX, y: clusterY });
+    } else {
+      const xRatio = 0.1 + 0.8 * r1;
+      const yRatio = 0.1 + 0.8 * r2;
+      setTarget({ x: xRatio, y: yRatio });
+      setTreeOrigin({ x: 0.5, y: 0.5 });
+    }
 
     // Timeline:
     // enter: opacity+position 2s, then text opacity, then 5s hold, then exit
@@ -103,7 +121,7 @@ export default function PostcardSequence({ card, entryOrigin = 'input' }) {
       timersRef.current = [];
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [card?.sentAt]);
+  }, [card?.sentAt, entryOrigin]);
 
   useEffect(() => {
     if (!active) return undefined;
@@ -170,6 +188,12 @@ export default function PostcardSequence({ card, entryOrigin = 'input' }) {
         '--target-x': `${tx}px`,
         '--target-y': `${ty}px`,
         '--card-scale': String(cardScale),
+        ...(entryOrigin === 'archive'
+          ? {
+              '--tree-origin-x': String(treeOrigin.x),
+              '--tree-origin-y': String(treeOrigin.y),
+            }
+          : {}),
       }}
     >
       <div className={styles.cardBlock}>

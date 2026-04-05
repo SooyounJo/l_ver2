@@ -1,21 +1,11 @@
 import styles from './styles.module.css';
 import { useWallLogic } from './logic';
 import PostcardSequence from './postcardSequence';
-import ScatteredTiles from './ScatteredTiles';
+import SynthTreeWall from './SynthTreeWall';
 import ArchiveSpotlight from './ArchiveSpotlight';
 
 export default function WallScreen() {
-  const {
-    cards,
-    lastInputAt,
-    pauseTilesMs,
-    tilesBurst,
-    burstRunId,
-    archiveRunId,
-    archiveActive,
-    archiveTextOverride,
-    gridVariant,
-  } = useWallLogic();
+  const { cards, lastInputAt, archiveRunId, archiveActive, archiveTextOverride } = useWallLogic();
 
   const clearWallSelection = () => {
     try {
@@ -30,14 +20,7 @@ export default function WallScreen() {
       onMouseDown={clearWallSelection}
       onTouchStart={clearWallSelection}
     >
-      <ScatteredTiles
-        lastInputAt={lastInputAt}
-        pauseMs={pauseTilesMs}
-        burst={tilesBurst}
-        burstRunId={burstRunId}
-        archiveRunId={archiveRunId}
-        gridVariant={gridVariant}
-      />
+      <SynthTreeWall cards={cards} lastInputAt={lastInputAt} archiveActive={archiveActive} />
       <ArchiveSpotlight cards={cards} runId={archiveRunId} active={archiveActive} textOverride={archiveTextOverride} />
       {!archiveActive &&
         cards.map((card) =>
